@@ -1,7 +1,11 @@
+package com.prabakar.collegecourse.domain;
+
+import com.prabakar.collegecourse.domain.Course;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Faculty  extends Person implements Teachable{
+public class Faculty  extends Person implements Teachable {
     private String employeeNumber;
     private String designation;
 
@@ -15,7 +19,7 @@ public class Faculty  extends Person implements Teachable{
 
     @Override
     public String getRole() {
-        return "Faculty";
+        return "com.prabakar.collegecourse.domain.Faculty";
     }
 
     @Override

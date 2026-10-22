@@ -1,3 +1,9 @@
+package com.prabakar.collegecourse.domain;
+
+import com.prabakar.collegecourse.domain.Course;
+import com.prabakar.collegecourse.domain.Department;
+import com.prabakar.collegecourse.domain.Faculty;
+import com.prabakar.collegecourse.domain.Teachable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

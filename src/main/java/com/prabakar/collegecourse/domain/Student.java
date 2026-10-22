@@ -1,4 +1,6 @@
-public class Student extends Person{
+package com.prabakar.collegecourse.domain;
+
+public class Student extends Person {
 
     private String registerNumber;
 
@@ -9,6 +11,6 @@ public class Student extends Person{
 
     @Override
     public String getRole() {
-        return "Student";
+        return "com.prabakar.collegecourse.domain.Student";
     }
 }

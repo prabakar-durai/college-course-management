@@ -1,3 +1,10 @@
+package com.prabakar.collegecourse.service;
+
+import com.prabakar.collegecourse.domain.Course;
+import com.prabakar.collegecourse.exception.CourseNotFoundException;
+import com.prabakar.collegecourse.exception.DuplicateCourseException;
+import com.prabakar.collegecourse.repository.CourseRepository;
+
 import java.util.List;
 
 public class CourseService {

@@ -1,3 +1,8 @@
+package com.prabakar.collegecourse.repository;
+
+import com.prabakar.collegecourse.domain.Course;
+import com.prabakar.collegecourse.repository.CourseRepository;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

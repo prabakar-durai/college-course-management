@@ -1,4 +1,9 @@
+package com.prabakar.collegecourse.repository;
 
+import com.prabakar.collegecourse.domain.Course;
+import com.prabakar.collegecourse.domain.Department;
+import com.prabakar.collegecourse.repository.CourseRepository;
+import com.prabakar.collegecourse.repository.InMemoryCourseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-# College Course Management
+# College com.prabakar.collegecourse.domain.Course Management
 
 A Java-based college course management system built as a hands-on Java refresher project. The project currently focuses on object-oriented domain modelling, a simple repository/service design, exception handling, and automated unit testing.
 
@@ -10,7 +10,7 @@ A Java-based college course management system built as a hands-on Java refresher
 - Add, find, list, and remove courses through a service layer
 - Reject duplicate courses
 - Report missing courses using custom exceptions
-- Demonstrate inheritance and interfaces through `Person`, `Student`, `Faculty`, and `Teachable`
+- Demonstrate inheritance and interfaces through `com.prabakar.collegecourse.domain.Person`, `com.prabakar.collegecourse.domain.Student`, `com.prabakar.collegecourse.domain.Faculty`, and `com.prabakar.collegecourse.domain.Teachable`
 - Verify behaviour with JUnit 5 tests
 
 ## Technologies

@@ -1,3 +1,8 @@
+package com.prabakar.collegecourse.domain;
+
+import com.prabakar.collegecourse.domain.Faculty;
+import com.prabakar.collegecourse.domain.Person;
+import com.prabakar.collegecourse.domain.Student;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -17,7 +22,7 @@ class PersonTest {
 
         assertInstanceOf(Person.class, student);
         assertEquals("Arun", student.getName());
-        assertEquals("Student", student.getRole());
+        assertEquals("com.prabakar.collegecourse.domain.Student", student.getRole());
     }
 
     @Test
@@ -32,7 +37,7 @@ class PersonTest {
 
         assertInstanceOf(Person.class, faculty);
         assertEquals("Prabakar", faculty.getName());
-        assertEquals("Faculty", faculty.getRole());
+        assertEquals("com.prabakar.collegecourse.domain.Faculty", faculty.getRole());
     }
 
     @Test
@@ -59,7 +64,7 @@ class PersonTest {
                 .toList();
 
         assertEquals(
-                List.of("Student", "Faculty"),
+                List.of("com.prabakar.collegecourse.domain.Student", "com.prabakar.collegecourse.domain.Faculty"),
                 roles
         );
     }

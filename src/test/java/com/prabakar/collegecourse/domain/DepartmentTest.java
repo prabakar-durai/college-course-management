@@ -1,3 +1,6 @@
+package com.prabakar.collegecourse.domain;
+
+import com.prabakar.collegecourse.domain.Department;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,10 +22,10 @@ class DepartmentTest {
         Department department =
                 new Department(1L, "Computer Applications", "MCA");
 
-        department.setName("Department of Computer Applications");
+        department.setName("com.prabakar.collegecourse.domain.Department of Computer Applications");
 
         assertEquals(
-                "Department of Computer Applications",
+                "com.prabakar.collegecourse.domain.Department of Computer Applications",
                 department.getName()
         );
     }
@@ -35,6 +38,6 @@ class DepartmentTest {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class, () -> department.setName("")
         );
-        assertEquals("Department name can not be empty", exception.getMessage());
+        assertEquals("com.prabakar.collegecourse.domain.Department name can not be empty", exception.getMessage());
     }
 }

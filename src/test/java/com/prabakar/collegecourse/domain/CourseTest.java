@@ -1,3 +1,7 @@
+package com.prabakar.collegecourse.domain;
+
+import com.prabakar.collegecourse.domain.Course;
+import com.prabakar.collegecourse.domain.Department;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +46,7 @@ class CourseTest {
         assertEquals("JAVA101", javaCourse.getCode());
         assertEquals("MCA", javaCourse.getDepartment().getCode());
 
-        // Confirms it is the exact same Department object
+        // Confirms it is the exact same com.prabakar.collegecourse.domain.Department object
         assertSame(mcaDepartment, javaCourse.getDepartment());
     }
 

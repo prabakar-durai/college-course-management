@@ -1,3 +1,5 @@
+package com.prabakar.collegecourse.domain;
+
 public class Department {
     private Long id;
 
@@ -17,7 +19,7 @@ public class Department {
 
         if (name == null || name.isBlank()){
             throw new IllegalArgumentException(
-                    "Department name can not be empty");
+                    "com.prabakar.collegecourse.domain.Department name can not be empty");
         }
         this.name = name;
     }
@@ -33,7 +35,7 @@ public class Department {
     private String name;
     private String code;
 
-    Department(Long id, String name, String code){
+   public  Department(Long id, String name, String code){
         this.id = id;
         this.name = name;
         this.code = code;

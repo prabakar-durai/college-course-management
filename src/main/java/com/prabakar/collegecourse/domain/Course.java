@@ -1,3 +1,5 @@
+package com.prabakar.collegecourse.domain;
+
 import java.util.Objects;
 
 public class Course {
@@ -47,7 +49,7 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course{" +
+        return "com.prabakar.collegecourse.domain.Course{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", title='" + title + '\'' +

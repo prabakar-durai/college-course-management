@@ -1,3 +1,12 @@
+package com.prabakar.collegecourse.service;
+
+import com.prabakar.collegecourse.domain.Course;
+import com.prabakar.collegecourse.domain.Department;
+import com.prabakar.collegecourse.exception.CourseNotFoundException;
+import com.prabakar.collegecourse.exception.DuplicateCourseException;
+import com.prabakar.collegecourse.repository.CourseRepository;
+import com.prabakar.collegecourse.repository.InMemoryCourseRepository;
+import com.prabakar.collegecourse.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +54,7 @@ class CourseServiceTest {
         );
 
         assertEquals(
-                "Course already exists: JAVA101",
+                "com.prabakar.collegecourse.domain.Course already exists: JAVA101",
                 exception.getMessage()
         );
     }
