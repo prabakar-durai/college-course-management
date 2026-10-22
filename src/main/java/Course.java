@@ -1,0 +1,75 @@
+import java.util.Objects;
+
+public class Course {
+    private Long id;
+    private String code;
+    private String title;
+    private Department department;
+
+    public Course(Long id, String code, String title, Department department) {
+        this.id = id;
+        this.code = code;
+        this.title = title;
+        this.department = department;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", title='" + title + '\'' +
+                ", department=" + department.getName() +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+
+        if (!(object instanceof Course course)) {
+            return false;
+        }
+
+        return Objects.equals(code, course.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code);
+    }
+}
