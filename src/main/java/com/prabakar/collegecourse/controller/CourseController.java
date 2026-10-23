@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class CourseController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Course addCourse(@RequestBody CreateCourseRequest request) {
+    public Course addCourse(@Valid @RequestBody CreateCourseRequest request) {
         Department department = new Department(
                 request.departmentId(),
                 request.departmentName(),

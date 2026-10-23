@@ -24,6 +24,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @WebMvcTest(CourseController.class)
 class CourseControllerTest {
@@ -138,5 +139,23 @@ class CourseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title")
                         .value("Course not found"));
+    }
+    @Test
+    void shouldRejectBlankCourseData() throws Exception {
+        mockMvc.perform(post("/api/courses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {
+                              "id": 101,
+                              "code": "",
+                              "title": "",
+                              "departmentId": 1,
+                              "departmentName": "",
+                              "departmentCode": ""
+                            }
+                            """))
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(courseService);
     }
 }
