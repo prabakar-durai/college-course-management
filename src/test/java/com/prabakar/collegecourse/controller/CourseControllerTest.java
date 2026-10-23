@@ -154,7 +154,15 @@ class CourseControllerTest {
                               "departmentCode": ""
                             }
                             """))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title")
+                        .value("Validation failed"))
+                .andExpect(jsonPath("$.errors.code")
+                        .value("must not be blank"))
+                .andExpect(jsonPath("$.errors.title")
+                        .value("must not be blank"))
+                .andExpect(jsonPath("$.errors.departmentName")
+                        .value("must not be blank"));
 
         verifyNoInteractions(courseService);
     }
