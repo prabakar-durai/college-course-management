@@ -20,6 +20,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @WebMvcTest(CourseController.class)
 class CourseControllerTest {
@@ -109,5 +113,30 @@ class CourseControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.title")
                         .value("Duplicate course"));
+    }
+    @Test
+    void shouldDeleteCourse() throws Exception {
+        doNothing()
+                .when(courseService)
+                .deleteCourse("JAVA101");
+
+        mockMvc.perform(delete("/api/courses/JAVA101"))
+                .andExpect(status().isNoContent());
+
+        verify(courseService).deleteCourse("JAVA101");
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenDeletingUnknownCourse()
+            throws Exception {
+
+        doThrow(new CourseNotFoundException("PYTHON101"))
+                .when(courseService)
+                .deleteCourse("PYTHON101");
+
+        mockMvc.perform(delete("/api/courses/PYTHON101"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.title")
+                        .value("Course not found"));
     }
 }
