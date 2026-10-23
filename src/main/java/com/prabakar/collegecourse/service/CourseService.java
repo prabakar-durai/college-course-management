@@ -4,9 +4,11 @@ import com.prabakar.collegecourse.domain.Course;
 import com.prabakar.collegecourse.exception.CourseNotFoundException;
 import com.prabakar.collegecourse.exception.DuplicateCourseException;
 import com.prabakar.collegecourse.repository.CourseRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CourseService {
 
     private final CourseRepository repository;

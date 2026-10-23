@@ -6,11 +6,13 @@ import com.prabakar.collegecourse.repository.CourseRepository;
 import com.prabakar.collegecourse.repository.InMemoryCourseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Repository
 class InMemoryCourseRepositoryTest {
 
     private CourseRepository repository;

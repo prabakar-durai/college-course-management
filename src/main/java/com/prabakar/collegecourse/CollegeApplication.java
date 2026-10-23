@@ -1,7 +1,12 @@
 package com.prabakar.collegecourse;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class CollegeApplication {
+
     public static void main(String[] args) {
-        System.out.println("College com.prabakar.collegecourse.domain.Course Management");
+        SpringApplication.run(CollegeApplication.class, args);
     }
 }
