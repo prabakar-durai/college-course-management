@@ -6,6 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.prabakar.collegecourse.domain.Department;
+import com.prabakar.collegecourse.dto.CreateCourseRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
@@ -27,5 +33,24 @@ public class CourseController {
     @GetMapping("/{code}")
     public Course getCourse(@PathVariable String code) {
         return courseService.getCourse(code);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Course addCourse(@RequestBody CreateCourseRequest request) {
+        Department department = new Department(
+                request.departmentId(),
+                request.departmentName(),
+                request.departmentCode()
+        );
+
+        Course course = new Course(
+                request.id(),
+                request.code(),
+                request.title(),
+                department
+        );
+
+        return courseService.addCourse(course);
     }
 }
