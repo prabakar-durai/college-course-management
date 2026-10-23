@@ -45,4 +45,12 @@ public class CourseService {
             throw new CourseNotFoundException(code);
         }
     }
+
+    public Course updateCourse(String code, Course updatedCourse) {
+        repository.findByCode(code)
+                .orElseThrow(() ->
+                        new CourseNotFoundException(code));
+
+        return repository.update(updatedCourse);
+    }
 }

@@ -15,4 +15,6 @@ public interface CourseRepository {
     List<Course> findAll();
 
     boolean deleteByCode(String code);
+
+    Course update(Course course);
 }

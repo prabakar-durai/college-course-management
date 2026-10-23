@@ -25,6 +25,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @WebMvcTest(CourseController.class)
 class CourseControllerTest {
@@ -165,5 +167,68 @@ class CourseControllerTest {
                         .value("must not be blank"));
 
         verifyNoInteractions(courseService);
+    }
+
+    @Test
+    void shouldUpdateCourse() throws Exception {
+        Department department = new Department(
+                1L,
+                "Computer Applications",
+                "MCA"
+        );
+
+        Course updatedCourse = new Course(
+                101L,
+                "JAVA101",
+                "Advanced Java",
+                department
+        );
+
+        when(courseService.updateCourse(
+                eq("JAVA101"),
+                any(Course.class)))
+                .thenReturn(updatedCourse);
+
+        mockMvc.perform(put("/api/courses/JAVA101")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {
+                              "id": 101,
+                              "title": "Advanced Java",
+                              "departmentId": 1,
+                              "departmentName": "Computer Applications",
+                              "departmentCode": "MCA"
+                            }
+                            """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("JAVA101"))
+                .andExpect(jsonPath("$.title")
+                        .value("Advanced Java"));
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenUpdatingUnknownCourse()
+            throws Exception {
+
+        when(courseService.updateCourse(
+                eq("PYTHON101"),
+                any(Course.class)))
+                .thenThrow(
+                        new CourseNotFoundException("PYTHON101"));
+
+        mockMvc.perform(put("/api/courses/PYTHON101")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {
+                              "id": 102,
+                              "title": "Python Programming",
+                              "departmentId": 1,
+                              "departmentName": "Computer Applications",
+                              "departmentCode": "MCA"
+                            }
+                            """))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.title")
+                        .value("Course not found"));
     }
 }

@@ -35,4 +35,10 @@ public class InMemoryCourseRepository implements CourseRepository {
     public boolean deleteByCode(String code) {
         return courses.remove(code) != null;
     }
+
+    @Override
+    public Course update(Course course) {
+        courses.put(course.getCode(), course);
+        return course;
+    }
 }

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import com.prabakar.collegecourse.dto.UpdateCourseRequest;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -59,5 +61,26 @@ public class CourseController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCourse(@PathVariable String code) {
         courseService.deleteCourse(code);
+    }
+
+    @PutMapping("/{code}")
+    public Course updateCourse(
+            @PathVariable String code,
+            @Valid @RequestBody UpdateCourseRequest request) {
+
+        Department department = new Department(
+                request.departmentId(),
+                request.departmentName(),
+                request.departmentCode()
+        );
+
+        Course updatedCourse = new Course(
+                request.id(),
+                code,
+                request.title(),
+                department
+        );
+
+        return courseService.updateCourse(code, updatedCourse);
     }
 }
