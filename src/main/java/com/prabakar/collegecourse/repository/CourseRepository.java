@@ -2,6 +2,7 @@ package com.prabakar.collegecourse.repository;
 
 import com.prabakar.collegecourse.domain.Course;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +15,6 @@ public interface CourseRepository {
     List<Course> findAll();
 
     boolean deleteByCode(String code);
+
+    Course update(Course course);
 }

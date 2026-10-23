@@ -78,4 +78,41 @@ class CourseServiceTest {
                 () -> service.getCourse("JAVA101")
         );
     }
+
+    @Test
+    void shouldUpdateExistingCourse() {
+        Department department = new Department(
+                1L, "Computer Applications", "MCA");
+
+        CourseService service =
+                new CourseService(new InMemoryCourseRepository());
+
+        service.addCourse(new Course(
+                101L, "JAVA101", "Java Programming", department));
+
+        Course updatedCourse = new Course(
+                101L, "JAVA101", "Advanced Java", department);
+
+        Course result =
+                service.updateCourse("JAVA101", updatedCourse);
+
+        assertEquals("Advanced Java", result.getTitle());
+    }
+
+    @Test
+    void shouldRejectUpdateForUnknownCourse() {
+        Department department = new Department(
+                1L, "Computer Applications", "MCA");
+
+        CourseService service =
+                new CourseService(new InMemoryCourseRepository());
+
+        Course updatedCourse = new Course(
+                101L, "JAVA101", "Advanced Java", department);
+
+        assertThrows(
+                CourseNotFoundException.class,
+                () -> service.updateCourse("JAVA101", updatedCourse)
+        );
+    }
 }

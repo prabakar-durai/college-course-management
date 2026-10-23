@@ -6,11 +6,13 @@ import com.prabakar.collegecourse.repository.CourseRepository;
 import com.prabakar.collegecourse.repository.InMemoryCourseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Repository
 class InMemoryCourseRepositoryTest {
 
     private CourseRepository repository;
@@ -66,5 +68,28 @@ class InMemoryCourseRepositoryTest {
 
         assertTrue(deleted);
         assertTrue(repository.findByCode("JAVA101").isEmpty());
+    }
+
+    @Test
+    void shouldUpdateExistingCourse() {
+        Department department = new Department(
+                1L, "Computer Applications", "MCA");
+
+        repository.save(new Course(
+                101L, "JAVA101", "Java Programming", department));
+
+        Course updatedCourse = new Course(
+                101L, "JAVA101", "Advanced Java", department);
+
+        Course result = repository.update(updatedCourse);
+
+        assertEquals("Advanced Java", result.getTitle());
+        assertEquals(
+                "Advanced Java",
+                repository.findByCode("JAVA101")
+                        .orElseThrow()
+                        .getTitle()
+        );
+        assertEquals(1, repository.findAll().size());
     }
 }

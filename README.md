@@ -13,6 +13,18 @@ A Java-based college course management system built as a hands-on Java refresher
 - Demonstrate inheritance and interfaces through `com.prabakar.collegecourse.domain.Person`, `com.prabakar.collegecourse.domain.Student`, `com.prabakar.collegecourse.domain.Faculty`, and `com.prabakar.collegecourse.domain.Teachable`
 - Verify behaviour with JUnit 5 tests
 
+## REST API
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/courses` | Retrieve all courses |
+| `GET` | `/api/courses/{code}` | Retrieve a course by code |
+| `POST` | `/api/courses` | Create a course |
+| `PUT` | `/api/courses/{code}` | Update a course |
+| `DELETE` | `/api/courses/{code}` | Delete a course |
+
+The API returns appropriate HTTP statuses including `201`, `204`, `400`, `404`, and `409`.
+
 ## Technologies
 
 - Java 21
@@ -20,6 +32,9 @@ A Java-based college course management system built as a hands-on Java refresher
 - JUnit 5
 - IntelliJ IDEA
 - Git and GitHub
+- Spring Boot 4.1.2
+- Spring Web MVC
+- Jakarta Bean Validation
 
 ## Project Structure
 
@@ -48,14 +63,9 @@ If Maven is installed and available from the terminal, run:
 mvn test
 ```
 
-Current test status: **22 tests passing**.
+Current test status: **34 tests passing**.
 
 ## Roadmap
-
-- Organize classes into domain, repository, service, and exception packages
-- Convert the project into a Spring Boot application
-- Expose course and department operations through REST APIs
-- Add request validation and consistent API error responses
 - Add a relational database using Spring Data JPA
 - Add integration tests and API documentation
 

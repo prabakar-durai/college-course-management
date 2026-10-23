@@ -2,6 +2,7 @@ package com.prabakar.collegecourse.repository;
 
 import com.prabakar.collegecourse.domain.Course;
 import com.prabakar.collegecourse.repository.CourseRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
 public class InMemoryCourseRepository implements CourseRepository {
 
     private final Map<String, Course> courses = new LinkedHashMap<>();
@@ -32,5 +34,11 @@ public class InMemoryCourseRepository implements CourseRepository {
     @Override
     public boolean deleteByCode(String code) {
         return courses.remove(code) != null;
+    }
+
+    @Override
+    public Course update(Course course) {
+        courses.put(course.getCode(), course);
+        return course;
     }
 }
