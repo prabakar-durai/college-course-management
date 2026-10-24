@@ -1,11 +1,22 @@
 package com.prabakar.collegecourse.domain;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Entity
+@Table(name = "Courses")
 public class Course {
+    @Id
     private Long id;
+    @Column(nullable = false, unique = true)
     private String code;
+
+    @Column(nullable = false)
     private String title;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
     public Course(Long id, String code, String title, Department department) {
@@ -15,6 +26,9 @@ public class Course {
         this.department = department;
     }
 
+    protected Course(){
+
+    }
     public Long getId() {
         return id;
     }
