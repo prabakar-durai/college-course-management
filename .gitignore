@@ -37,3 +37,5 @@ target/
 
 ### Backup archives ###
 *.zip
+### Local H2 database ###
+data/
