@@ -39,3 +39,6 @@ target/
 *.zip
 ### Local H2 database ###
 data/
+
+### Application logs ###
+logs/

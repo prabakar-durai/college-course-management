@@ -159,6 +159,22 @@ The database contains the following tables:
 The `COURSES.DEPARTMENT_ID` column associates each course with its department.
 
 > The H2 console is intended only for local development and should not be enabled in production.
+## Application Logging
+
+The application uses SLF4J with Logback, provided by Spring Boot.
+
+Logging is implemented in the service layer for meaningful business operations:
+
+- `INFO` for successful course creation, update, and deletion
+- `WARN` for duplicate courses and missing courses
+- `DEBUG` for course retrieval details
+- `ERROR` is reserved for unexpected system failures
+
+Logs are written to both the console and `logs/college-course-management.log`.
+
+Log files rotate when they reach 10 MB, and seven historical files are retained. The local `logs/` directory is excluded from Git.
+
+The application package currently uses the `DEBUG` level for development. A production configuration should normally use `INFO` or `WARN`.
 
 ## Running the Tests
 
