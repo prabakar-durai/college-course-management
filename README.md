@@ -186,10 +186,31 @@ The test suite covers:
 - Exception handling
 - JPA repository adapter and H2 persistence
 
+## API Documentation
+
+Interactive OpenAPI documentation is available through Swagger UI while the application is running:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+The machine-readable OpenAPI specification is available at:
+
+```text
+http://localhost:8080/v3/api-docs
+```
+
+Swagger UI can be used to:
+
+- View all available course endpoints
+- Inspect request and response formats
+- Review validation requirements
+- Review possible HTTP response codes
+- Execute API requests directly from the browser
+
 ## Roadmap
 
 - Add full Spring Boot integration tests
-- Add OpenAPI/Swagger documentation
 - Introduce separate development and production configurations
 - Replace H2 with PostgreSQL for production-style persistence
 - Add pagination and course searching
