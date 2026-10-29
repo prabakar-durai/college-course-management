@@ -190,7 +190,7 @@ If Maven is installed and available from the terminal, run:
 mvn test
 ```
 
-Current test status: **37 tests passing**.
+Current test status: **38 tests passing**.
 
 The test suite covers:
 
@@ -201,6 +201,7 @@ The test suite covers:
 - Request validation
 - Exception handling
 - JPA repository adapter and H2 persistence
+- Full course lifecycle integration through Controller, Service, JPA, and H2
 
 ## API Documentation
 
@@ -226,7 +227,6 @@ Swagger UI can be used to:
 
 ## Roadmap
 
-- Add full Spring Boot integration tests
 - Introduce separate development and production configurations
 - Replace H2 with PostgreSQL for production-style persistence
 - Add pagination and course searching
