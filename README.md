@@ -283,8 +283,7 @@ The CI pipeline:
 
 ## Roadmap
 
-- Introduce separate development and production configurations
-- Replace H2 with PostgreSQL for production-style persistence
+- Add a PostgreSQL-backed production profile
 - Add pagination and course searching
 - Containerize the application using Docker
 
