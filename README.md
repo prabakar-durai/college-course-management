@@ -111,15 +111,52 @@ college-course-management/
 └── .gitignore
 ```
 
-## Running the Application
 
-Open the project in IntelliJ IDEA and run:
+
+## Environment Profiles
+
+Spring Boot profiles separate configuration for different environments.
+
+| Profile | Configuration file | Purpose |
+|---|---|---|
+| Common | `application.properties` | Application name and shared JPA settings |
+| `dev` | `application-dev.properties` | File-based H2 database, H2 console, debug logging and local log files |
+| `test` | `application-test.properties` | Isolated in-memory H2 database for automated tests |
+
+### Development Profile
+
+When running the application locally, activate the `dev` profile.
+
+In IntelliJ IDEA:
+
+1. Open **Run → Edit Configurations**
+2. Select `CollegeApplication`
+3. Add the following value under **Program arguments**:
 
 ```text
-CollegeApplication
+--spring.profiles.active=dev
 ```
 
-The application starts on:
+The startup log should confirm:
+
+```text
+The following 1 profile is active: "dev"
+```
+
+The development profile:
+
+- Preserves local H2 data between restarts
+- Enables the H2 browser console
+- Enables application debug logging
+- Writes logs to the local `logs/` directory
+
+The integration test activates the `test` profile automatically. It uses an isolated in-memory H2 database and does not modify the local development database.
+
+## Running the Application
+
+Open the project in IntelliJ IDEA and run `CollegeApplication` with the `dev` profile enabled.
+
+The application starts at:
 
 ```text
 http://localhost:8080
@@ -130,6 +167,10 @@ To verify the API:
 ```bash
 curl http://localhost:8080/api/courses
 ```
+The development tools are available at:
+
+- Swagger UI: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- H2 Console: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
 
 ## Database
 
