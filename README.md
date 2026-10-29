@@ -1,5 +1,7 @@
 # College Course Management API
 
+[![Maven CI](https://github.com/prabakar-durai/college-course-management/actions/workflows/maven-ci.yml/badge.svg)](https://github.com/prabakar-durai/college-course-management/actions/workflows/maven-ci.yml)
+
 A Spring Boot REST API for managing college courses and departments.
 
 This project is being developed incrementally as a hands-on Java refresher and backend portfolio project. It demonstrates object-oriented design, layered architecture, REST API development, validation, exception handling, database persistence, and automated testing.
@@ -225,12 +227,24 @@ Swagger UI can be used to:
 - Review possible HTTP response codes
 - Execute API requests directly from the browser
 
+## Continuous Integration
+
+GitHub Actions automatically builds the application and runs the complete test suite on every push and pull request.
+
+The CI pipeline:
+
+- Uses an Ubuntu runner
+- Installs Java 21
+- Caches Maven dependencies
+- Runs the Maven `verify` lifecycle
+- Executes all 38 automated tests
+- Fails the build if compilation or any test fails
+
 ## Roadmap
 
 - Introduce separate development and production configurations
 - Replace H2 with PostgreSQL for production-style persistence
 - Add pagination and course searching
-- Add continuous integration with GitHub Actions
 - Containerize the application using Docker
 
 ## Purpose
