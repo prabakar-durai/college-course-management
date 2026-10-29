@@ -42,3 +42,6 @@ data/
 
 ### Application logs ###
 logs/
+
+### Local environment variables ###
+.env
