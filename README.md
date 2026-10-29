@@ -111,8 +111,6 @@ college-course-management/
 └── .gitignore
 ```
 
-
-
 ## Environment Profiles
 
 Spring Boot profiles separate configuration for different environments.
@@ -122,16 +120,17 @@ Spring Boot profiles separate configuration for different environments.
 | Common | `application.properties` | Application name and shared JPA settings |
 | `dev` | `application-dev.properties` | File-based H2 database, H2 console, debug logging and local log files |
 | `test` | `application-test.properties` | Isolated in-memory H2 database for automated tests |
+| `prod` | `application-prod.properties` | PostgreSQL database, production logging and disabled development tools |
 
 ### Development Profile
 
-When running the application locally, activate the `dev` profile.
+When running the application locally with H2, activate the `dev` profile.
 
 In IntelliJ IDEA:
 
 1. Open **Run → Edit Configurations**
 2. Select `CollegeApplication`
-3. Add the following value under **Program arguments**:
+3. Enter the following under **Program arguments**:
 
 ```text
 --spring.profiles.active=dev
@@ -149,12 +148,73 @@ The development profile:
 - Enables the H2 browser console
 - Enables application debug logging
 - Writes logs to the local `logs/` directory
+- Enables Swagger UI and OpenAPI documentation
 
-The integration test activates the `test` profile automatically. It uses an isolated in-memory H2 database and does not modify the local development database.
+### Test Profile
+
+The integration test activates the `test` profile automatically.
+
+The test profile:
+
+- Uses an isolated in-memory H2 database
+- Creates and drops its schema during testing
+- Does not modify the local development database
+- Disables the H2 browser console
+- Reduces application logging during tests
+
+### Production Profile
+
+The `prod` profile uses PostgreSQL.
+
+PostgreSQL runs locally through Docker Compose. Copy the environment-variable template before starting it:
+
+```bash
+cp .env.example .env
+```
+
+Update the password in `.env`, then start PostgreSQL:
+
+```bash
+docker compose up -d
+```
+
+Check that the container is healthy:
+
+```bash
+docker compose ps
+```
+
+In IntelliJ IDEA, activate the production profile with:
+
+```text
+--spring.profiles.active=prod
+```
+
+The production profile:
+
+- Connects to PostgreSQL
+- Reads database configuration from environment variables
+- Uses `INFO` application logging
+- Disables the H2 browser console
+- Disables Swagger UI and OpenAPI endpoints
+
+To stop PostgreSQL while preserving its database volume:
+
+```bash
+docker compose down
+```
+
+To stop PostgreSQL and permanently remove its local database volume:
+
+```bash
+docker compose down -v
+```
+
+> `docker compose down -v` deletes the locally stored PostgreSQL data.
 
 ## Running the Application
 
-Open the project in IntelliJ IDEA and run `CollegeApplication` with the `dev` profile enabled.
+Open the project in IntelliJ IDEA and run `CollegeApplication` with either the `dev` or `prod` profile enabled.
 
 The application starts at:
 
@@ -167,26 +227,35 @@ To verify the API:
 ```bash
 curl http://localhost:8080/api/courses
 ```
-The development tools are available at:
+
+When the `dev` profile is active, development tools are available at:
 
 - Swagger UI: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 - H2 Console: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
 
+These development tools are disabled when the `prod` profile is active.
+
 ## Database
 
-The application uses a file-based H2 database.
+The application supports different databases for different environments.
 
-Database records are stored locally under the `data/` directory and remain available after application restarts. This directory is excluded from Git because it contains local runtime data.
+| Environment | Database | Storage |
+|---|---|---|
+| Development | H2 | File-based and persistent |
+| Test | H2 | In-memory and temporary |
+| Production | PostgreSQL | Docker-managed persistent volume |
 
-### H2 Console
+### Development H2 Database
 
-Start the application and open:
+Development records are stored under the local `data/` directory and remain available after application restarts. The directory is excluded from Git because it contains runtime data.
+
+The H2 console is available at:
 
 ```text
 http://localhost:8080/h2-console
 ```
 
-Use the following connection details:
+Use:
 
 ```text
 JDBC URL: jdbc:h2:file:./data/college-course-db
@@ -194,14 +263,35 @@ User Name: sa
 Password: leave blank
 ```
 
-The database contains the following tables:
+### PostgreSQL Database
 
-- `COURSES`
-- `DEPARTMENTS`
+The production profile connects to the PostgreSQL container defined in `compose.yml`.
 
-The `COURSES.DEPARTMENT_ID` column associates each course with its department.
+Local connection details are read from `.env`. The `.env` file is excluded from Git, while `.env.example` documents the required variables:
 
-> The H2 console is intended only for local development and should not be enabled in production.
+```text
+POSTGRES_HOST
+POSTGRES_PORT
+POSTGRES_DB
+POSTGRES_USER
+POSTGRES_PASSWORD
+```
+
+PostgreSQL data is stored in the Docker named volume:
+
+```text
+college-course-management_postgres-data
+```
+
+Both databases contain:
+
+- `courses`
+- `departments`
+
+The `courses.department_id` column associates each course with its department.
+
+> H2 is intended for local development and testing. PostgreSQL represents the production database configuration.
+
 ## Application Logging
 
 The application uses SLF4J with Logback, provided by Spring Boot.
@@ -283,9 +373,9 @@ The CI pipeline:
 
 ## Roadmap
 
-- Add a PostgreSQL-backed production profile
 - Add pagination and course searching
-- Containerize the application using Docker
+- Introduce Flyway database migrations
+- Containerize the Spring Boot application using Docker
 
 ## Purpose
 
