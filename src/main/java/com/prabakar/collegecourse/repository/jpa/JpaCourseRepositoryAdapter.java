@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 @Primary
@@ -65,5 +67,26 @@ public class JpaCourseRepositoryAdapter
     @Override
     public Course update(Course course) {
         return save(course);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Course> findAll(Pageable pageable) {
+        return courseRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Course> search(String query, Pageable pageable) {
+        if (query == null || query.isBlank()) {
+            return courseRepository.findAll(pageable);
+        }
+
+        return courseRepository
+                .findByCodeContainingIgnoreCaseOrTitleContainingIgnoreCase(
+                        query,
+                        query,
+                        pageable
+                );
     }
 }

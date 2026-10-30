@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,6 +31,25 @@ class JpaCourseRepositoryAdapterTest {
         return new Course(
                 101L,
                 "JAVA101",
+                title,
+                department
+        );
+    }
+
+    private Course createCourse(
+            Long id,
+            String code,
+            String title) {
+
+        Department department = new Department(
+                1L,
+                "Computer Applications",
+                "MCA"
+        );
+
+        return new Course(
+                id,
+                code,
                 title,
                 department
         );
@@ -62,5 +84,89 @@ class JpaCourseRepositoryAdapterTest {
 
         assertTrue(repository.deleteByCode("JAVA101"));
         assertFalse(repository.findByCode("JAVA101").isPresent());
+    }
+
+    @Test
+    void shouldReturnPaginatedCoursesSortedByTitle() {
+        repository.save(createCourse(
+                101L,
+                "JAVA101",
+                "Java Programming"
+        ));
+
+        repository.save(createCourse(
+                102L,
+                "DB101",
+                "Database Systems"
+        ));
+
+        repository.save(createCourse(
+                103L,
+                "WEB101",
+                "Web Technologies"
+        ));
+
+        Page<Course> result = repository.findAll(
+                PageRequest.of(
+                        0,
+                        2,
+                        Sort.by("title").ascending()
+                )
+        );
+
+        assertEquals(2, result.getContent().size());
+        assertEquals(3, result.getTotalElements());
+        assertEquals(2, result.getTotalPages());
+        assertEquals(
+                "Database Systems",
+                result.getContent().get(0).getTitle()
+        );
+        assertEquals(
+                "Java Programming",
+                result.getContent().get(1).getTitle()
+        );
+    }
+
+    @Test
+    void shouldSearchCodeAndTitleIgnoringCase() {
+        repository.save(createCourse(
+                101L,
+                "JAVA101",
+                "Java Programming"
+        ));
+
+        repository.save(createCourse(
+                102L,
+                "SPRING101",
+                "Spring Boot Development"
+        ));
+
+        repository.save(createCourse(
+                103L,
+                "DB101",
+                "Database Systems"
+        ));
+
+        Page<Course> codeResult = repository.search(
+                "java",
+                PageRequest.of(0, 10)
+        );
+
+        Page<Course> titleResult = repository.search(
+                "BOOT",
+                PageRequest.of(0, 10)
+        );
+
+        assertEquals(1, codeResult.getTotalElements());
+        assertEquals(
+                "JAVA101",
+                codeResult.getContent().get(0).getCode()
+        );
+
+        assertEquals(1, titleResult.getTotalElements());
+        assertEquals(
+                "SPRING101",
+                titleResult.getContent().get(0).getCode()
+        );
     }
 }
