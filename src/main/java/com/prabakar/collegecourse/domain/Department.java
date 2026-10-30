@@ -12,11 +12,16 @@ public class Department {
     private Long id;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false, unique = true)
+    private String code;
+
+
     public Long getId() {
         return id;
     }
 
-    @Column(nullable = false, unique = true)
     public void setId(Long id) {
         this.id = id;
     }
@@ -46,8 +51,6 @@ public class Department {
         this.code = code;
     }
 
-    private String name;
-    private String code;
 
    public  Department(Long id, String name, String code){
         this.id = id;

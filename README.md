@@ -11,7 +11,8 @@ This project is being developed incrementally as a hands-on Java refresher and b
 - Model departments, courses, students, and faculty members
 - Associate courses with departments
 - Create, retrieve, update, and delete courses through REST endpoints
-- Persist courses and departments using Spring Data JPA and H2
+- Persist courses and departments using Spring Data JPA with H2 and PostgreSQL
+- Manage the production database schema using versioned Flyway migrations
 - Retain database records across application restarts
 - Reject duplicate course codes
 - Report missing courses using custom exceptions
@@ -61,6 +62,9 @@ The API returns appropriate HTTP statuses, including:
 - Spring Data JPA
 - Hibernate
 - H2 Database
+- PostgreSQL
+- Flyway
+- Docker Compose
 - Jakarta Bean Validation
 - Maven
 - JUnit
@@ -83,7 +87,7 @@ JPA repository adapter
     ↓
 Spring Data JPA
     ↓
-H2 database
+H2 / PostgreSQL
 ```
 
 The service layer depends on the `CourseRepository` abstraction rather than directly depending on Spring Data JPA. The JPA adapter implements this abstraction and handles database operations.
@@ -105,7 +109,11 @@ college-course-management/
 │   │   │   ├── service/
 │   │   │   └── CollegeApplication.java
 │   │   └── resources/
-│   │       └── application.properties
+│   │       ├── db/migration/
+│   │       │   └── V1__create_course_schema.sql
+│   │       ├── application.properties
+│   │       ├── application-dev.properties
+│   │       └── application-prod.properties
 │   └── test/
 │       └── java/com/prabakar/collegecourse/
 └── .gitignore
@@ -197,6 +205,8 @@ The production profile:
 - Uses `INFO` application logging
 - Disables the H2 browser console
 - Disables Swagger UI and OpenAPI endpoints
+- Runs versioned Flyway database migrations
+- Uses Hibernate to validate the migrated schema
 
 To stop PostgreSQL while preserving its database volume:
 
@@ -292,6 +302,32 @@ The `courses.department_id` column associates each course with its department.
 
 > H2 is intended for local development and testing. PostgreSQL represents the production database configuration.
 
+## Database Migrations
+
+The production PostgreSQL schema is managed with Flyway.
+
+Migration scripts are stored under:
+
+```text
+src/main/resources/db/migration
+```
+
+The initial migration is:
+
+```text
+V1__create_course_schema.sql
+```
+
+It creates the `departments` and `courses` tables, their unique constraints, and the foreign-key relationship between courses and departments.
+
+Flyway records applied migrations in the `flyway_schema_history` table. Previously applied migration files must not be modified. Future schema changes should be introduced through new versioned scripts, for example:
+
+```text
+V2__add_course_duration.sql
+```
+
+In the production profile, Hibernate uses `ddl-auto=validate`. Flyway manages schema changes, while Hibernate verifies that the database schema matches the JPA entity mappings.
+
 ## Application Logging
 
 The application uses SLF4J with Logback, provided by Spring Boot.
@@ -307,7 +343,7 @@ Logs are written to both the console and `logs/college-course-management.log`.
 
 Log files rotate when they reach 10 MB, and seven historical files are retained. The local `logs/` directory is excluded from Git.
 
-The application package currently uses the `DEBUG` level for development. A production configuration should normally use `INFO` or `WARN`.
+The development profile uses `DEBUG` application logging, while the production profile uses `INFO`.
 
 ## Running the Tests
 
@@ -374,7 +410,6 @@ The CI pipeline:
 ## Roadmap
 
 - Add pagination and course searching
-- Introduce Flyway database migrations
 - Containerize the Spring Boot application using Docker
 
 ## Purpose
@@ -383,4 +418,4 @@ This project is being developed incrementally to refresh modern Java and backend
 
 ## Author
 
-Prabakar Duraisamyß
+Prabakar Duraisamy
