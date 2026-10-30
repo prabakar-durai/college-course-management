@@ -21,8 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -40,15 +43,31 @@ public class CourseController {
 
     @GetMapping
     @Operation(
-            summary = "Retrieve all courses",
-            description = "Returns every course currently stored in the system"
+            summary = "Retrieve courses",
+            description = """
+                Returns a paginated list of courses. An optional query
+                searches course codes and titles without case sensitivity.
+                """
     )
     @ApiResponse(
             responseCode = "200",
             description = "Courses retrieved successfully"
     )
-    public List<Course> getAllCourses() {
-        return courseService.getAllCourses();
+    public PagedModel<Course> getCourses(
+            @Parameter(
+                    description = "Optional text matched against course code or title",
+                    example = "java"
+            )
+            @RequestParam(name = "query", required = false)
+            String query,
+
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "code")
+            Pageable pageable) {
+
+        return new PagedModel<>(
+                courseService.getCourses(query, pageable)
+        );
     }
 
     @GetMapping("/{code}")

@@ -21,16 +21,18 @@ This project is being developed incrementally as a hands-on Java refresher and b
 - Return appropriate HTTP status codes using centralized exception handling
 - Demonstrate inheritance and interfaces through `Person`, `Student`, `Faculty`, and `Teachable`
 - Verify domain, repository, service, controller, and persistence behaviour with automated tests
-
+- Search courses by partial code or title without case sensitivity
+- Retrieve courses using pagination and sorting
 ## REST API
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/courses` | Retrieve all courses |
+| `GET` | `/api/courses` | Search and retrieve courses with pagination and sorting |
 | `GET` | `/api/courses/{code}` | Retrieve a course by code |
 | `POST` | `/api/courses` | Create a course |
 | `PUT` | `/api/courses/{code}` | Update a course |
 | `DELETE` | `/api/courses/{code}` | Delete a course |
+
 
 The API returns appropriate HTTP statuses, including:
 
@@ -40,6 +42,43 @@ The API returns appropriate HTTP statuses, including:
 - `400 Bad Request`
 - `404 Not Found`
 - `409 Conflict`
+
+## Course Search and Pagination
+
+The course collection endpoint supports these optional query parameters:
+
+| Parameter | Default | Description |
+|---|---|---|
+| `query` | None | Case-insensitive partial match against course code or title |
+| `page` | `0` | Zero-based page number |
+| `size` | `10` | Maximum courses returned in one page |
+| `sort` | `code,asc` | Property and direction used to sort results |
+
+Example:
+
+```bash
+curl "http://localhost:8080/api/courses?query=java&page=0&size=10&sort=title,asc"
+```
+
+A paginated response contains course data under `content` and pagination metadata under `page`:
+
+```json
+{
+  "content": [
+    {
+      "id": 101,
+      "code": "JAVA101",
+      "title": "Java Programming"
+    }
+  ],
+  "page": {
+    "size": 10,
+    "number": 0,
+    "totalElements": 1,
+    "totalPages": 1
+  }
+}
+```
 
 ## Example Course Request
 
@@ -359,7 +398,7 @@ If Maven is installed and available from the terminal, run:
 mvn test
 ```
 
-Current test status: **38 tests passing**.
+Current test status: **44 tests passing**.
 
 The test suite covers:
 
@@ -371,7 +410,8 @@ The test suite covers:
 - Exception handling
 - JPA repository adapter and H2 persistence
 - Full course lifecycle integration through Controller, Service, JPA, and H2
-
+- Course searching by code and title
+- Pagination and sorting
 ## API Documentation
 
 Interactive OpenAPI documentation is available through Swagger UI while the application is running:
@@ -404,12 +444,11 @@ The CI pipeline:
 - Installs Java 21
 - Caches Maven dependencies
 - Runs the Maven `verify` lifecycle
-- Executes all 38 automated tests
+- Executes all 44 automated tests
 - Fails the build if compilation or any test fails
 
 ## Roadmap
 
-- Add pagination and course searching
 - Containerize the Spring Boot application using Docker
 
 ## Purpose

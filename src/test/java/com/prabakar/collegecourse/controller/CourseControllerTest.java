@@ -11,6 +11,14 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.isNull;
 
 import java.util.List;
 
@@ -53,15 +61,32 @@ class CourseControllerTest {
     }
 
     @Test
-    void shouldReturnAllCourses() throws Exception {
-        when(courseService.getAllCourses())
-                .thenReturn(List.of(createJavaCourse()));
+    void shouldReturnPaginatedCourses() throws Exception {
+        Page<Course> page = new PageImpl<>(
+                List.of(createJavaCourse()),
+                PageRequest.of(
+                        0,
+                        10,
+                        Sort.by("code").ascending()
+                ),
+                1
+        );
+
+        when(courseService.getCourses(
+                isNull(),
+                any(Pageable.class)))
+                .thenReturn(page);
 
         mockMvc.perform(get("/api/courses"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].code").value("JAVA101"))
-                .andExpect(jsonPath("$[0].title")
-                        .value("Java Programming"));
+                .andExpect(jsonPath("$.content[0].code")
+                        .value("JAVA101"))
+                .andExpect(jsonPath("$.content[0].title")
+                        .value("Java Programming"))
+                .andExpect(jsonPath("$.page.number").value(0))
+                .andExpect(jsonPath("$.page.size").value(10))
+                .andExpect(jsonPath("$.page.totalElements").value(1))
+                .andExpect(jsonPath("$.page.totalPages").value(1));
     }
 
     @Test
@@ -230,5 +255,49 @@ class CourseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title")
                         .value("Course not found"));
+    }
+
+    @Test
+    void shouldPassSearchAndPaginationParametersToService()
+            throws Exception {
+
+        Page<Course> page = new PageImpl<>(
+                List.of(createJavaCourse()),
+                PageRequest.of(
+                        1,
+                        5,
+                        Sort.by("title").descending()
+                ),
+                6
+        );
+
+        when(courseService.getCourses(
+                eq("java"),
+                any(Pageable.class)))
+                .thenReturn(page);
+
+        mockMvc.perform(get("/api/courses")
+                        .param("query", "java")
+                        .param("page", "1")
+                        .param("size", "5")
+                        .param("sort", "title,desc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].code")
+                        .value("JAVA101"))
+                .andExpect(jsonPath("$.page.number").value(1))
+                .andExpect(jsonPath("$.page.size").value(5))
+                .andExpect(jsonPath("$.page.totalElements").value(6))
+                .andExpect(jsonPath("$.page.totalPages").value(2));
+
+        verify(courseService).getCourses(
+                eq("java"),
+                argThat(pageable ->
+                        pageable.getPageNumber() == 1
+                                && pageable.getPageSize() == 5
+                                && pageable.getSort()
+                                .getOrderFor("title")
+                                .isDescending()
+                )
+        );
     }
 }
