@@ -110,6 +110,7 @@ A paginated response contains course data under `content` and pagination metadat
 - Mockito
 - IntelliJ IDEA
 - Git and GitHub
+- Docker and Docker Compose
 
 ## Architecture
 
@@ -135,10 +136,13 @@ The service layer depends on the `CourseRepository` abstraction rather than dire
 
 ```text
 college-course-management/
-├── pom.xml
+├── .github/
+│   └── workflows/
+│       └── maven-ci.yml
 ├── src/
 │   ├── main/
 │   │   ├── java/com/prabakar/collegecourse/
+│   │   │   ├── config/
 │   │   │   ├── controller/
 │   │   │   ├── domain/
 │   │   │   ├── dto/
@@ -154,8 +158,16 @@ college-course-management/
 │   │       ├── application-dev.properties
 │   │       └── application-prod.properties
 │   └── test/
-│       └── java/com/prabakar/collegecourse/
-└── .gitignore
+│       ├── java/com/prabakar/collegecourse/
+│       └── resources/
+│           └── application-test.properties
+├── .dockerignore
+├── .env.example
+├── .gitignore
+├── compose.yml
+├── Dockerfile
+├── pom.xml
+└── README.md
 ```
 
 ## Environment Profiles
@@ -447,10 +459,64 @@ The CI pipeline:
 - Executes all 44 automated tests
 - Fails the build if compilation or any test fails
 
-## Roadmap
+## Running with Docker
 
-- Containerize the Spring Boot application using Docker
+The complete application stack can be run using Docker Compose. It includes:
 
+- Spring Boot application running with the `prod` profile
+- PostgreSQL 17 database
+- Flyway database migrations
+- Persistent PostgreSQL storage
+
+Copy the environment-variable template and provide a database password:
+
+```bash
+cp .env.example .env
+```
+
+Build and start the complete stack:
+
+```bash
+docker compose up --build -d
+```
+
+Check the container status:
+
+```bash
+docker compose ps
+```
+
+The REST API is available at:
+
+```text
+http://localhost:8080/api/courses
+```
+
+Example request:
+
+```bash
+curl "http://localhost:8080/api/courses?page=0&size=10&sort=code,asc"
+```
+
+View application logs:
+
+```bash
+docker compose logs -f application
+```
+
+Stop the containers while preserving PostgreSQL data:
+
+```bash
+docker compose down
+```
+
+To remove the containers and permanently delete the PostgreSQL volume:
+
+```bash
+docker compose down -v
+```
+
+> `docker compose down -v` permanently deletes the locally stored PostgreSQL data.
 ## Purpose
 
 This project is being developed incrementally to refresh modern Java and backend-development skills while demonstrating clean code, automated testing, version control, REST API design, and database persistence.
