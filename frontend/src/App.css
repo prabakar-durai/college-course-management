@@ -110,3 +110,63 @@ tbody tr:hover {
   color: #a61b1b;
   background: #fff2f2;
 }
+
+.search-form {
+  min-width: min(100%, 430px);
+}
+
+.search-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #44546a;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.search-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-controls input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+  color: #1e293b;
+  background: white;
+  border: 1px solid #b8c4d2;
+  border-radius: 7px;
+}
+
+.search-controls input:focus {
+  border-color: #245c8f;
+  outline: 3px solid rgb(36 92 143 / 15%);
+}
+
+.search-controls button {
+  padding: 0.65rem 1rem;
+  color: white;
+  cursor: pointer;
+  background: #245c8f;
+  border: 1px solid #245c8f;
+  border-radius: 7px;
+  font-weight: 700;
+}
+
+.search-controls .secondary-button {
+  color: #44546a;
+  background: white;
+  border-color: #b8c4d2;
+}
+
+@media (max-width: 760px) {
+  .panel-heading {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .search-controls {
+    flex-wrap: wrap;
+  }
+}

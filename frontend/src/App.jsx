@@ -3,6 +3,8 @@ import './App.css'
 
 function App() {
   const [courses, setCourses] = useState([])
+  const [searchText, setSearchText] = useState('')
+  const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -10,9 +12,22 @@ function App() {
     const controller = new AbortController()
 
     async function loadCourses() {
+      setLoading(true)
+      setError('')
+
+      const parameters = new URLSearchParams({
+        page: '0',
+        size: '10',
+        sort: 'code,asc',
+      })
+
+      if (query) {
+        parameters.set('query', query)
+      }
+
       try {
         const response = await fetch(
-          '/api/courses?page=0&size=10&sort=code,asc',
+          `/api/courses?${parameters.toString()}`,
           { signal: controller.signal },
         )
 
@@ -27,14 +42,26 @@ function App() {
           setError(requestError.message)
         }
       } finally {
-        setLoading(false)
+        if (!controller.signal.aborted) {
+          setLoading(false)
+        }
       }
     }
 
     loadCourses()
 
     return () => controller.abort()
-  }, [])
+  }, [query])
+
+  function handleSearch(event) {
+    event.preventDefault()
+    setQuery(searchText.trim())
+  }
+
+  function handleClearSearch() {
+    setSearchText('')
+    setQuery('')
+  }
 
   return (
     <div className="app-shell">
@@ -55,6 +82,32 @@ function App() {
               <h2>Courses</h2>
               <p>{courses.length} course(s) displayed</p>
             </div>
+
+            <form className="search-form" onSubmit={handleSearch}>
+              <label htmlFor="course-search">Search courses</label>
+
+              <div className="search-controls">
+                <input
+                  id="course-search"
+                  type="search"
+                  value={searchText}
+                  placeholder="Code or title"
+                  onChange={(event) => setSearchText(event.target.value)}
+                />
+
+                <button type="submit">Search</button>
+
+                {(searchText || query) && (
+                  <button
+                    className="secondary-button"
+                    type="button"
+                    onClick={handleClearSearch}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </form>
           </div>
 
           {loading && <p className="message">Loading courses…</p>}
@@ -66,7 +119,9 @@ function App() {
           )}
 
           {!loading && !error && courses.length === 0 && (
-            <p className="message">No courses are currently available.</p>
+            <p className="message">
+              No courses matched your search.
+            </p>
           )}
 
           {!loading && !error && courses.length > 0 && (
