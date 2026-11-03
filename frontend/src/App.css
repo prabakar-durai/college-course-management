@@ -170,3 +170,113 @@ tbody tr:hover {
     flex-wrap: wrap;
   }
 }
+.course-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.sort-control label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #44546a;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.sort-control select {
+  min-width: 150px;
+  padding: 0.65rem 0.75rem;
+  color: #1e293b;
+  background: white;
+  border: 1px solid #b8c4d2;
+  border-radius: 7px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid #e5eaf0;
+}
+
+.pagination p {
+  margin: 0;
+  color: #66758a;
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pagination-buttons button {
+  padding: 0.6rem 1rem;
+  color: white;
+  cursor: pointer;
+  background: #245c8f;
+  border: 1px solid #245c8f;
+  border-radius: 7px;
+  font-weight: 700;
+}
+
+.pagination-buttons button:disabled {
+  color: #8a96a6;
+  cursor: not-allowed;
+  background: #edf1f5;
+  border-color: #d6dde6;
+}
+
+@media (max-width: 1000px) {
+  .course-controls {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .search-form {
+    width: 100%;
+  }
+
+  .sort-control select {
+    width: 100%;
+  }
+}
+.panel-heading {
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.panel-heading > div:first-child {
+  flex: 0 0 auto;
+}
+
+.course-controls {
+  flex: 1 1 600px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.search-form {
+  flex: 1 1 340px;
+  min-width: 0;
+  max-width: 430px;
+}
+
+.sort-control {
+  flex: 0 1 170px;
+  min-width: 150px;
+}
+
+.sort-control select {
+  width: 100%;
+}
+
+@media (max-width: 1000px) {
+  .search-form {
+    max-width: none;
+  }
+}
