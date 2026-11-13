@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import CourseForm from './components/CourseForm'
 import './App.css'
 
 const PAGE_SIZE = 2
@@ -9,6 +10,7 @@ function App() {
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(0)
   const [sort, setSort] = useState('code,asc')
+  const [refreshKey, setRefreshKey] = useState(0)
   const [pageDetails, setPageDetails] = useState({
     number: 0,
     size: PAGE_SIZE,
@@ -70,7 +72,7 @@ function App() {
     loadCourses()
 
     return () => controller.abort()
-  }, [query, page, sort])
+  }, [query, page, sort, refreshKey])
 
   function handleSearch(event) {
     event.preventDefault()
@@ -88,6 +90,14 @@ function App() {
     setSort(event.target.value)
     setPage(0)
   }
+
+  function handleCourseCreated() {
+  setSearchText('')
+  setQuery('')
+  setPage(0)
+  setSort('code,asc')
+  setRefreshKey((currentKey) => currentKey + 1)
+}
 
   const hasPreviousPage = pageDetails.number > 0
   const hasNextPage =
@@ -109,6 +119,8 @@ function App() {
       </header>
 
       <main>
+        <CourseForm onCourseCreated={handleCourseCreated} />
+
         <section className="course-panel">
           <div className="panel-heading">
             <div>

@@ -280,3 +280,133 @@ tbody tr:hover {
     max-width: none;
   }
 }
+.course-form-panel {
+  width: min(100% - 4rem, 1580px);
+  margin: 3rem auto 0;
+  padding: 2rem;
+  background: #ffffff;
+  border: 1px solid #d6e0ec;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 2rem rgba(30, 64, 105, 0.08);
+}
+
+.form-heading {
+  margin-bottom: 1.75rem;
+}
+
+.form-heading h2 {
+  margin: 0.35rem 0;
+  color: #1e293b;
+  font-size: 2rem;
+}
+
+.form-heading p {
+  margin: 0;
+  color: #64748b;
+}
+
+.form-eyebrow {
+  color: #28669b !important;
+  font-size: 0.8rem;
+}
+
+.course-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.form-field-wide {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.form-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  color: #1e293b;
+  background: #ffffff;
+  border: 1px solid #b9c8da;
+  border-radius: 0.6rem;
+  font: inherit;
+}
+
+.form-field input:focus {
+  border-color: #28669b;
+  outline: 3px solid rgba(40, 102, 155, 0.14);
+}
+
+.field-error {
+  color: #b42318;
+  font-size: 0.85rem;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-actions button {
+  padding: 0.85rem 1.3rem;
+  color: #ffffff;
+  background: #28669b;
+  border: 0;
+  border-radius: 0.6rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.form-actions button:hover:not(:disabled) {
+  background: #1f527e;
+}
+
+.form-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.form-message {
+  margin: 0;
+  color: #28669b;
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .course-form-panel {
+    width: min(100% - 2rem, 1580px);
+    padding: 1.25rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-field-wide {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
