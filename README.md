@@ -1,10 +1,10 @@
-# College Course Management API
+# College Course Management
 
 [![Maven CI](https://github.com/prabakar-durai/college-course-management/actions/workflows/maven-ci.yml/badge.svg)](https://github.com/prabakar-durai/college-course-management/actions/workflows/maven-ci.yml)
 
-A Spring Boot REST API for managing college courses and departments.
+A full-stack application for managing college courses and departments, built with a React frontend and a Spring Boot REST API.
 
-This project is being developed incrementally as a hands-on Java refresher and backend portfolio project. It demonstrates object-oriented design, layered architecture, REST API development, validation, exception handling, database persistence, and automated testing.
+This project is being developed incrementally as a hands-on Java and React refresher and portfolio project. It demonstrates object-oriented design, layered architecture, REST API development, frontend integration, validation, exception handling, database persistence, and automated testing.
 
 ## Current Features
 
@@ -23,16 +23,20 @@ This project is being developed incrementally as a hands-on Java refresher and b
 - Verify domain, repository, service, controller, and persistence behaviour with automated tests
 - Search courses by partial code or title without case sensitivity
 - Retrieve courses using pagination and sorting
+- Manage courses through a responsive React user interface
+- Display loading, empty, success, validation, and API error states
+- Create, edit, and delete courses from the frontend
+- Confirm destructive course deletion before sending the request
+
 ## REST API
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/courses` | Search and retrieve courses with pagination and sorting |
-| `GET` | `/api/courses/{code}` | Retrieve a course by code |
-| `POST` | `/api/courses` | Create a course |
-| `PUT` | `/api/courses/{code}` | Update a course |
-| `DELETE` | `/api/courses/{code}` | Delete a course |
-
+| Method   | Endpoint              | Description                                             |
+| -------- | --------------------- | ------------------------------------------------------- |
+| `GET`    | `/api/courses`        | Search and retrieve courses with pagination and sorting |
+| `GET`    | `/api/courses/{code}` | Retrieve a course by code                               |
+| `POST`   | `/api/courses`        | Create a course                                         |
+| `PUT`    | `/api/courses/{code}` | Update a course                                         |
+| `DELETE` | `/api/courses/{code}` | Delete a course                                         |
 
 The API returns appropriate HTTP statuses, including:
 
@@ -47,12 +51,12 @@ The API returns appropriate HTTP statuses, including:
 
 The course collection endpoint supports these optional query parameters:
 
-| Parameter | Default | Description |
-|---|---|---|
-| `query` | None | Case-insensitive partial match against course code or title |
-| `page` | `0` | Zero-based page number |
-| `size` | `10` | Maximum courses returned in one page |
-| `sort` | `code,asc` | Property and direction used to sort results |
+| Parameter | Default    | Description                                                 |
+| --------- | ---------- | ----------------------------------------------------------- |
+| `query`   | None       | Case-insensitive partial match against course code or title |
+| `page`    | `0`        | Zero-based page number                                      |
+| `size`    | `10`       | Maximum courses returned in one page                        |
+| `sort`    | `code,asc` | Property and direction used to sort results                 |
 
 Example:
 
@@ -103,20 +107,29 @@ A paginated response contains course data under `content` and pagination metadat
 - H2 Database
 - PostgreSQL
 - Flyway
-- Docker Compose
 - Jakarta Bean Validation
 - Maven
 - JUnit
 - Mockito
 - IntelliJ IDEA
+- JavaScript
+- React
+- Vite
+- HTML and CSS
+- Node.js and npm
+- Oxlint
+- Prettier
+- Visual Studio Code
 - Git and GitHub
 - Docker and Docker Compose
 
 ## Architecture
 
-The project follows a layered design:
+The project follows a frontend and layered backend design:
 
 ```text
+React frontend
+    ↓ HTTP / JSON
 Controller
     ↓
 Service
@@ -139,6 +152,22 @@ college-course-management/
 ├── .github/
 │   └── workflows/
 │       └── maven-ci.yml
+├── .vscode/
+│   └── settings.json
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── CourseForm.jsx
+│   │   │   └── EditCourseForm.jsx
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   └── vite.config.js
 ├── src/
 │   ├── main/
 │   │   ├── java/com/prabakar/collegecourse/
@@ -174,12 +203,12 @@ college-course-management/
 
 Spring Boot profiles separate configuration for different environments.
 
-| Profile | Configuration file | Purpose |
-|---|---|---|
-| Common | `application.properties` | Application name and shared JPA settings |
-| `dev` | `application-dev.properties` | File-based H2 database, H2 console, debug logging and local log files |
-| `test` | `application-test.properties` | Isolated in-memory H2 database for automated tests |
-| `prod` | `application-prod.properties` | PostgreSQL database, production logging and disabled development tools |
+| Profile | Configuration file            | Purpose                                                                |
+| ------- | ----------------------------- | ---------------------------------------------------------------------- |
+| Common  | `application.properties`      | Application name and shared JPA settings                               |
+| `dev`   | `application-dev.properties`  | File-based H2 database, H2 console, debug logging and local log files  |
+| `test`  | `application-test.properties` | Isolated in-memory H2 database for automated tests                     |
+| `prod`  | `application-prod.properties` | PostgreSQL database, production logging and disabled development tools |
 
 ### Development Profile
 
@@ -275,9 +304,15 @@ docker compose down -v
 
 ## Running the Application
 
-Open the project in IntelliJ IDEA and run `CollegeApplication` with either the `dev` or `prod` profile enabled.
+### Backend
 
-The application starts at:
+Open the project in IntelliJ IDEA and run `CollegeApplication` with either the `dev` or `prod` profile enabled. Alternatively, start the containerized Spring Boot application and PostgreSQL database:
+
+```bash
+docker compose up -d
+```
+
+The backend starts at:
 
 ```text
 http://localhost:8080
@@ -296,15 +331,50 @@ When the `dev` profile is active, development tools are available at:
 
 These development tools are disabled when the `prod` profile is active.
 
+### Frontend
+
+The frontend requires Node.js and npm. Install its dependencies once:
+
+```bash
+cd frontend
+npm install
+```
+
+Start the Vite development server:
+
+```bash
+npm run dev
+```
+
+Open the frontend at:
+
+```text
+http://localhost:5173
+```
+
+During development, Vite proxies requests beginning with `/api` to the Spring Boot backend at `http://localhost:8080`.
+
+The React interface supports:
+
+- Course listing
+- Case-insensitive search by course code or title
+- Sorting and pagination
+- Course creation with field-level validation
+- Course editing with protected ID and code fields
+- Course deletion with confirmation
+- Automatic list refresh after create, update, and delete operations
+
+To stop the Vite development server, press `Control + C` in its terminal.
+
 ## Database
 
 The application supports different databases for different environments.
 
-| Environment | Database | Storage |
-|---|---|---|
-| Development | H2 | File-based and persistent |
-| Test | H2 | In-memory and temporary |
-| Production | PostgreSQL | Docker-managed persistent volume |
+| Environment | Database   | Storage                          |
+| ----------- | ---------- | -------------------------------- |
+| Development | H2         | File-based and persistent        |
+| Test        | H2         | In-memory and temporary          |
+| Production  | PostgreSQL | Docker-managed persistent volume |
 
 ### Development H2 Database
 
@@ -424,6 +494,23 @@ The test suite covers:
 - Full course lifecycle integration through Controller, Service, JPA, and H2
 - Course searching by code and title
 - Pagination and sorting
+
+### Frontend Checks
+
+From the `frontend` directory, run the JavaScript linter:
+
+```bash
+npm run lint
+```
+
+Create an optimized production build:
+
+```bash
+npm run build
+```
+
+The generated `frontend/dist/` directory is excluded from Git.
+
 ## API Documentation
 
 Interactive OpenAPI documentation is available through Swagger UI while the application is running:
@@ -461,12 +548,14 @@ The CI pipeline:
 
 ## Running with Docker
 
-The complete application stack can be run using Docker Compose. It includes:
+The backend stack can be run using Docker Compose. It includes:
 
 - Spring Boot application running with the `prod` profile
 - PostgreSQL 17 database
 - Flyway database migrations
 - Persistent PostgreSQL storage
+
+The React frontend currently runs separately through the Vite development server and is not yet included in Docker Compose.
 
 Copy the environment-variable template and provide a database password:
 
@@ -517,9 +606,10 @@ docker compose down -v
 ```
 
 > `docker compose down -v` permanently deletes the locally stored PostgreSQL data.
+
 ## Purpose
 
-This project is being developed incrementally to refresh modern Java and backend-development skills while demonstrating clean code, automated testing, version control, REST API design, and database persistence.
+This project is being developed incrementally to refresh modern Java, Spring Boot, and React skills while demonstrating clean code, automated testing, version control, REST API design, frontend integration, and database persistence.
 
 ## Author
 
