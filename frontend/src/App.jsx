@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import CourseForm from './components/CourseForm'
+import EditCourseForm from './components/EditCourseForm'
 import './App.css'
 
 const PAGE_SIZE = 2
@@ -19,6 +20,7 @@ function App() {
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [courseBeingEdited, setCourseBeingEdited] = useState(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -99,6 +101,10 @@ function App() {
   setRefreshKey((currentKey) => currentKey + 1)
 }
 
+function handleCourseUpdated() {
+  setCourseBeingEdited(null)
+  setRefreshKey((currentKey) => currentKey + 1)
+}
   const hasPreviousPage = pageDetails.number > 0
   const hasNextPage =
     pageDetails.number + 1 < pageDetails.totalPages
@@ -120,6 +126,14 @@ function App() {
 
       <main>
         <CourseForm onCourseCreated={handleCourseCreated} />
+        {courseBeingEdited && (
+  <EditCourseForm
+    key={courseBeingEdited.code}
+    course={courseBeingEdited}
+    onCourseUpdated={handleCourseUpdated}
+    onCancel={() => setCourseBeingEdited(null)}
+  />
+)}
 
         <section className="course-panel">
           <div className="panel-heading">
@@ -198,6 +212,7 @@ function App() {
                       <th>Title</th>
                       <th>Department</th>
                       <th>Department code</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -212,6 +227,15 @@ function App() {
                         <td>{course.title}</td>
                         <td>{course.department.name}</td>
                         <td>{course.department.code}</td>
+                        <td>
+  <button
+    className="table-action-button"
+    type="button"
+    onClick={() => setCourseBeingEdited(course)}
+  >
+    Edit
+  </button>
+</td>
                       </tr>
                     ))}
                   </tbody>

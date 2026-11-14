@@ -410,3 +410,33 @@ tbody tr:hover {
     flex-direction: column;
   }
 }
+.form-field input[readonly] {
+  color: #64748b;
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.form-actions .secondary-button {
+  color: #475569;
+  background-color: #ffffff;
+  border: 1px solid #b9c8da;
+}
+
+.form-actions .secondary-button:hover:not(:disabled) {
+  background-color: #f1f5f9;
+}
+
+.table-action-button {
+  padding: 0.45rem 0.8rem;
+  color: #205b89;
+  background-color: #e8f3fb;
+  border: 1px solid #c8deee;
+  border-radius: 0.45rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.table-action-button:hover {
+  background-color: #d7eaf7;
+}
