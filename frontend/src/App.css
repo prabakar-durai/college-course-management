@@ -440,3 +440,23 @@ tbody tr:hover {
 .table-action-button:hover {
   background-color: #d7eaf7;
 }
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.table-action-button.delete-button {
+  color: #b42318;
+  background-color: #fff1f0;
+  border-color: #f0b8b3;
+}
+
+.table-action-button.delete-button:hover:not(:disabled) {
+  background-color: #ffe1de;
+}
+
+.table-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
