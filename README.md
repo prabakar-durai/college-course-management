@@ -480,7 +480,7 @@ If Maven is installed and available from the terminal, run:
 mvn test
 ```
 
-Current test status: **44 tests passing**.
+Current backend test status: **44 tests passing**.
 
 The test suite covers:
 
@@ -497,7 +497,15 @@ The test suite covers:
 
 ### Frontend Checks
 
-From the `frontend` directory, run the JavaScript linter:
+From the `frontend` directory, run the focused component tests:
+
+```bash
+npm test
+```
+
+Current frontend test status: **5 tests passing across 2 test files**.
+
+Run the JavaScript linter:
 
 ```bash
 npm run lint
@@ -507,6 +515,12 @@ Create an optimized production build:
 
 ```bash
 npm run build
+```
+
+Verify Prettier formatting:
+
+```bash
+npm run format:check
 ```
 
 The generated `frontend/dist/` directory is excluded from Git.
@@ -535,16 +549,27 @@ Swagger UI can be used to:
 
 ## Continuous Integration
 
-GitHub Actions automatically builds the application and runs the complete test suite on every push and pull request.
+GitHub Actions verifies both the backend and frontend on every push and pull request.
 
-The CI pipeline:
+The backend CI job:
 
 - Uses an Ubuntu runner
 - Installs Java 21
 - Caches Maven dependencies
 - Runs the Maven `verify` lifecycle
-- Executes all 44 automated tests
-- Fails the build if compilation or any test fails
+- Executes all 44 backend tests
+- Fails if compilation or any backend test fails
+
+The frontend CI job:
+
+- Installs Node.js
+- Caches npm dependencies
+- Installs dependencies using `npm ci`
+- Executes all 5 frontend tests
+- Runs Oxlint
+- Creates the Vite production build
+- Verifies Prettier formatting
+
 
 ## Running with Docker
 
