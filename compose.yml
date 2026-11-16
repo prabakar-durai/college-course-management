@@ -44,5 +44,19 @@ services:
       postgres:
         condition: service_healthy
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: college-course-frontend:local
+    container_name: college-course-frontend
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      application:
+        condition: service_started
+
 volumes:
   postgres-data:
