@@ -82,9 +82,7 @@ function CourseForm({ onCourseCreated }) {
     <section className="course-form-panel">
       <div className="form-heading">
         <div>
-          <p className="eyebrow form-eyebrow">
-            Course administration
-          </p>
+          <p className="eyebrow form-eyebrow">Course administration</p>
           <h2>Add a course</h2>
           <p>Create a course and associate it with a department.</p>
         </div>
@@ -150,9 +148,7 @@ function CourseForm({ onCourseCreated }) {
               onChange={handleChange}
             />
             {fieldErrors.departmentId && (
-              <span className="field-error">
-                {fieldErrors.departmentId}
-              </span>
+              <span className="field-error">{fieldErrors.departmentId}</span>
             )}
           </div>
 
@@ -167,9 +163,7 @@ function CourseForm({ onCourseCreated }) {
               onChange={handleChange}
             />
             {fieldErrors.departmentCode && (
-              <span className="field-error">
-                {fieldErrors.departmentCode}
-              </span>
+              <span className="field-error">{fieldErrors.departmentCode}</span>
             )}
           </div>
 
@@ -184,9 +178,7 @@ function CourseForm({ onCourseCreated }) {
               onChange={handleChange}
             />
             {fieldErrors.departmentName && (
-              <span className="field-error">
-                {fieldErrors.departmentName}
-              </span>
+              <span className="field-error">{fieldErrors.departmentName}</span>
             )}
           </div>
         </div>

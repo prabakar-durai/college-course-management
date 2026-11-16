@@ -22,7 +22,7 @@ function App() {
   const [error, setError] = useState('')
   const [courseBeingEdited, setCourseBeingEdited] = useState(null)
   const [deletingCode, setDeletingCode] = useState(null)
-const [deleteError, setDeleteError] = useState('')
+  const [deleteError, setDeleteError] = useState('')
 
   useEffect(() => {
     const controller = new AbortController()
@@ -42,10 +42,9 @@ const [deleteError, setDeleteError] = useState('')
       }
 
       try {
-        const response = await fetch(
-          `/api/courses?${parameters.toString()}`,
-          { signal: controller.signal },
-        )
+        const response = await fetch(`/api/courses?${parameters.toString()}`, {
+          signal: controller.signal,
+        })
 
         if (!response.ok) {
           throw new Error(`Unable to load courses (${response.status})`)
@@ -96,72 +95,71 @@ const [deleteError, setDeleteError] = useState('')
   }
 
   function handleCourseCreated() {
-  setSearchText('')
-  setQuery('')
-  setPage(0)
-  setSort('code,asc')
-  setRefreshKey((currentKey) => currentKey + 1)
-}
-
-function handleCourseUpdated() {
-  setCourseBeingEdited(null)
-  setRefreshKey((currentKey) => currentKey + 1)
-}
-async function handleDeleteCourse(course) {
-  const confirmed = window.confirm(
-    `Delete course ${course.code} — ${course.title}?`,
-  )
-
-  if (!confirmed) {
-    return
+    setSearchText('')
+    setQuery('')
+    setPage(0)
+    setSort('code,asc')
+    setRefreshKey((currentKey) => currentKey + 1)
   }
 
-  setDeletingCode(course.code)
-  setDeleteError('')
-
-  try {
-    const response = await fetch(
-      `/api/courses/${encodeURIComponent(course.code)}`,
-      {
-        method: 'DELETE',
-      },
+  function handleCourseUpdated() {
+    setCourseBeingEdited(null)
+    setRefreshKey((currentKey) => currentKey + 1)
+  }
+  async function handleDeleteCourse(course) {
+    const confirmed = window.confirm(
+      `Delete course ${course.code} — ${course.title}?`,
     )
 
-    if (!response.ok) {
-      let message = `Unable to delete course ${course.code}.`
+    if (!confirmed) {
+      return
+    }
 
-      try {
-        const errorResponse = await response.json()
-        message =
-          errorResponse.detail ||
-          errorResponse.message ||
-          errorResponse.title ||
-          message
-      } catch {
-        // The response did not contain JSON.
+    setDeletingCode(course.code)
+    setDeleteError('')
+
+    try {
+      const response = await fetch(
+        `/api/courses/${encodeURIComponent(course.code)}`,
+        {
+          method: 'DELETE',
+        },
+      )
+
+      if (!response.ok) {
+        let message = `Unable to delete course ${course.code}.`
+
+        try {
+          const errorResponse = await response.json()
+          message =
+            errorResponse.detail ||
+            errorResponse.message ||
+            errorResponse.title ||
+            message
+        } catch {
+          // The response did not contain JSON.
+        }
+
+        throw new Error(message)
       }
 
-      throw new Error(message)
-    }
+      if (courseBeingEdited?.code === course.code) {
+        setCourseBeingEdited(null)
+      }
 
-    if (courseBeingEdited?.code === course.code) {
-      setCourseBeingEdited(null)
+      if (courses.length === 1 && page > 0) {
+        setPage((currentPage) => currentPage - 1)
+      } else {
+        setRefreshKey((currentKey) => currentKey + 1)
+      }
+    } catch (deleteFailure) {
+      setDeleteError(deleteFailure.message)
+    } finally {
+      setDeletingCode(null)
     }
-
-    if (courses.length === 1 && page > 0) {
-      setPage((currentPage) => currentPage - 1)
-    } else {
-      setRefreshKey((currentKey) => currentKey + 1)
-    }
-  } catch (deleteFailure) {
-    setDeleteError(deleteFailure.message)
-  } finally {
-    setDeletingCode(null)
   }
-}
   const hasPreviousPage = pageDetails.number > 0
-  const hasNextPage =
-    pageDetails.number + 1 < pageDetails.totalPages
+  const hasNextPage = pageDetails.number + 1 < pageDetails.totalPages
 
   const displayedPage =
     pageDetails.totalPages === 0 ? 0 : pageDetails.number + 1
@@ -181,13 +179,13 @@ async function handleDeleteCourse(course) {
       <main>
         <CourseForm onCourseCreated={handleCourseCreated} />
         {courseBeingEdited && (
-  <EditCourseForm
-    key={courseBeingEdited.code}
-    course={courseBeingEdited}
-    onCourseUpdated={handleCourseUpdated}
-    onCancel={() => setCourseBeingEdited(null)}
-  />
-)}
+          <EditCourseForm
+            key={courseBeingEdited.code}
+            course={courseBeingEdited}
+            onCourseUpdated={handleCourseUpdated}
+            onCancel={() => setCourseBeingEdited(null)}
+          />
+        )}
 
         <section className="course-panel">
           <div className="panel-heading">
@@ -206,9 +204,7 @@ async function handleDeleteCourse(course) {
                     type="search"
                     value={searchText}
                     placeholder="Code or title"
-                    onChange={(event) =>
-                      setSearchText(event.target.value)
-                    }
+                    onChange={(event) => setSearchText(event.target.value)}
                   />
 
                   <button type="submit">Search</button>
@@ -250,16 +246,14 @@ async function handleDeleteCourse(course) {
           )}
 
           {!loading && !error && courses.length === 0 && (
-            <p className="message">
-              No courses matched your search.
-            </p>
+            <p className="message">No courses matched your search.</p>
           )}
 
           {deleteError && (
-  <p className="error-message" role="alert">
-    {deleteError}
-  </p>
-)}
+            <p className="error-message" role="alert">
+              {deleteError}
+            </p>
+          )}
 
           {!loading && !error && courses.length > 0 && (
             <>
@@ -280,33 +274,33 @@ async function handleDeleteCourse(course) {
                       <tr key={course.id}>
                         <td>{course.id}</td>
                         <td>
-                          <span className="course-code">
-                            {course.code}
-                          </span>
+                          <span className="course-code">{course.code}</span>
                         </td>
                         <td>{course.title}</td>
                         <td>{course.department.name}</td>
                         <td>{course.department.code}</td>
-                       <td>
-  <div className="table-actions">
-    <button
-      className="table-action-button"
-      type="button"
-      onClick={() => setCourseBeingEdited(course)}
-    >
-      Edit
-    </button>
+                        <td>
+                          <div className="table-actions">
+                            <button
+                              className="table-action-button"
+                              type="button"
+                              onClick={() => setCourseBeingEdited(course)}
+                            >
+                              Edit
+                            </button>
 
-    <button
-      className="table-action-button delete-button"
-      type="button"
-      disabled={deletingCode === course.code}
-      onClick={() => handleDeleteCourse(course)}
-    >
-      {deletingCode === course.code ? 'Deleting…' : 'Delete'}
-    </button>
-  </div>
-</td>
+                            <button
+                              className="table-action-button delete-button"
+                              type="button"
+                              disabled={deletingCode === course.code}
+                              onClick={() => handleDeleteCourse(course)}
+                            >
+                              {deletingCode === course.code
+                                ? 'Deleting…'
+                                : 'Delete'}
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -322,9 +316,7 @@ async function handleDeleteCourse(course) {
                   <button
                     type="button"
                     disabled={!hasPreviousPage || loading}
-                    onClick={() =>
-                      setPage((currentPage) => currentPage - 1)
-                    }
+                    onClick={() => setPage((currentPage) => currentPage - 1)}
                   >
                     Previous
                   </button>
@@ -332,9 +324,7 @@ async function handleDeleteCourse(course) {
                   <button
                     type="button"
                     disabled={!hasNextPage || loading}
-                    onClick={() =>
-                      setPage((currentPage) => currentPage + 1)
-                    }
+                    onClick={() => setPage((currentPage) => currentPage + 1)}
                   >
                     Next
                   </button>
