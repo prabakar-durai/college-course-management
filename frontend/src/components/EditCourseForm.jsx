@@ -1,10 +1,6 @@
 import { useState } from 'react'
 
-function EditCourseForm({
-  course,
-  onCourseUpdated,
-  onCancel,
-}) {
+function EditCourseForm({ course, onCourseUpdated, onCancel }) {
   const [formData, setFormData] = useState({
     id: course.id,
     code: course.code,
@@ -87,9 +83,7 @@ function EditCourseForm({
     <section className="course-form-panel edit-course-panel">
       <div className="form-heading">
         <div>
-          <p className="eyebrow form-eyebrow">
-            Course administration
-          </p>
+          <p className="eyebrow form-eyebrow">Course administration</p>
           <h2>Edit {course.code}</h2>
           <p>Update the course and its department information.</p>
         </div>
@@ -135,9 +129,7 @@ function EditCourseForm({
           </div>
 
           <div className="form-field">
-            <label htmlFor="edit-department-id">
-              Department ID
-            </label>
+            <label htmlFor="edit-department-id">Department ID</label>
             <input
               id="edit-department-id"
               name="departmentId"
@@ -148,16 +140,12 @@ function EditCourseForm({
               onChange={handleChange}
             />
             {fieldErrors.departmentId && (
-              <span className="field-error">
-                {fieldErrors.departmentId}
-              </span>
+              <span className="field-error">{fieldErrors.departmentId}</span>
             )}
           </div>
 
           <div className="form-field">
-            <label htmlFor="edit-department-code">
-              Department code
-            </label>
+            <label htmlFor="edit-department-code">Department code</label>
             <input
               id="edit-department-code"
               name="departmentCode"
@@ -167,16 +155,12 @@ function EditCourseForm({
               onChange={handleChange}
             />
             {fieldErrors.departmentCode && (
-              <span className="field-error">
-                {fieldErrors.departmentCode}
-              </span>
+              <span className="field-error">{fieldErrors.departmentCode}</span>
             )}
           </div>
 
           <div className="form-field form-field-wide">
-            <label htmlFor="edit-department-name">
-              Department name
-            </label>
+            <label htmlFor="edit-department-name">Department name</label>
             <input
               id="edit-department-name"
               name="departmentName"
@@ -186,9 +170,7 @@ function EditCourseForm({
               onChange={handleChange}
             />
             {fieldErrors.departmentName && (
-              <span className="field-error">
-                {fieldErrors.departmentName}
-              </span>
+              <span className="field-error">{fieldErrors.departmentName}</span>
             )}
           </div>
         </div>
