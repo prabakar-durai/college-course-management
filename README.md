@@ -1,62 +1,109 @@
 # College Course Management
 
-[![Maven CI](https://github.com/prabakar-durai/college-course-management/actions/workflows/maven-ci.yml/badge.svg)](https://github.com/prabakar-durai/college-course-management/actions/workflows/maven-ci.yml)
+[![Application CI](https://github.com/prabakar-durai/college-course-management/actions/workflows/maven-ci.yml/badge.svg)](https://github.com/prabakar-durai/college-course-management/actions/workflows/maven-ci.yml)
 
-A full-stack application for managing college courses and departments, built with a React frontend and a Spring Boot REST API.
+A full-stack course administration application built with React, Spring Boot and PostgreSQL. It demonstrates layered backend design, REST API development, database migrations, validation, automated testing, continuous integration and containerized deployment.
 
-This project is being developed incrementally as a hands-on Java and React refresher and portfolio project. It demonstrates object-oriented design, layered architecture, REST API development, frontend integration, validation, exception handling, database persistence, and automated testing.
+## Application Preview
 
-## Current Features
+### Course creation
 
-- Model departments, courses, students, and faculty members
-- Associate courses with departments
-- Create, retrieve, update, and delete courses through REST endpoints
-- Persist courses and departments using Spring Data JPA with H2 and PostgreSQL
-- Manage the production database schema using versioned Flyway migrations
-- Retain database records across application restarts
-- Reject duplicate course codes
-- Report missing courses using custom exceptions
-- Validate incoming API requests
-- Return field-level validation errors
-- Return appropriate HTTP status codes using centralized exception handling
-- Demonstrate inheritance and interfaces through `Person`, `Student`, `Faculty`, and `Teachable`
-- Verify domain, repository, service, controller, and persistence behaviour with automated tests
-- Search courses by partial code or title without case sensitivity
-- Retrieve courses using pagination and sorting
-- Manage courses through a responsive React user interface
-- Display loading, empty, success, validation, and API error states
-- Create, edit, and delete courses from the frontend
-- Confirm destructive course deletion before sending the request
+![Course creation form](docs/images/course-creation.png)
+
+### Course management
+
+![Course list with search, sorting, editing and deletion](docs/images/course-list.png)
+
+## Features
+
+- Create, retrieve, update and delete courses
+- Associate every course with a department
+- Search by partial course code or title without case sensitivity
+- Sort and navigate paginated course results
+- Validate requests and display field-level errors
+- Reject duplicate course codes and report missing courses
+- Confirm course deletion before sending the request
+- Display loading, empty, success and API error states
+- Persist development data in H2 and production data in PostgreSQL
+- Manage the PostgreSQL schema through versioned Flyway migrations
+- Run the complete application with Docker Compose
+- Verify backend and frontend behaviour through automated tests and CI
+
+## Technology Stack
+
+### Backend
+
+- Java 21
+- Spring Boot 4.1.2
+- Spring Web MVC
+- Spring Data JPA and Hibernate
+- Jakarta Bean Validation
+- Flyway
+- Maven
+- JUnit, Mockito and MockMvc
+
+### Frontend
+
+- React 19
+- Vite
+- JavaScript, HTML and CSS
+- Vitest and React Testing Library
+- Oxlint and Prettier
+- Nginx
+
+### Data and delivery
+
+- H2 for development and automated tests
+- PostgreSQL 17 for the production profile
+- Docker and Docker Compose
+- GitHub Actions
+
+## Architecture
+
+```text
+Browser
+   |
+   | HTTP
+   v
+React application served by Nginx
+   |
+   | /api requests
+   v
+Spring Boot REST controller
+   v
+Service layer
+   v
+CourseRepository abstraction
+   v
+JPA repository adapter
+   v
+Spring Data JPA / Hibernate
+   v
+H2 or PostgreSQL
+```
+
+The service layer depends on the `CourseRepository` abstraction instead of Spring Data directly. A JPA adapter implements the abstraction and isolates persistence concerns from the business logic.
+
+When Docker Compose is used, Nginx serves the React production build and proxies `/api` requests to the Spring Boot container. Spring Boot connects to PostgreSQL, while Flyway manages the database schema.
 
 ## REST API
 
-| Method   | Endpoint              | Description                                             |
-| -------- | --------------------- | ------------------------------------------------------- |
-| `GET`    | `/api/courses`        | Search and retrieve courses with pagination and sorting |
-| `GET`    | `/api/courses/{code}` | Retrieve a course by code                               |
-| `POST`   | `/api/courses`        | Create a course                                         |
-| `PUT`    | `/api/courses/{code}` | Update a course                                         |
-| `DELETE` | `/api/courses/{code}` | Delete a course                                         |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/courses` | Search and retrieve courses with pagination and sorting |
+| `GET` | `/api/courses/{code}` | Retrieve a course by code |
+| `POST` | `/api/courses` | Create a course |
+| `PUT` | `/api/courses/{code}` | Update a course |
+| `DELETE` | `/api/courses/{code}` | Delete a course |
 
-The API returns appropriate HTTP statuses, including:
+The collection endpoint accepts these optional parameters:
 
-- `200 OK`
-- `201 Created`
-- `204 No Content`
-- `400 Bad Request`
-- `404 Not Found`
-- `409 Conflict`
-
-## Course Search and Pagination
-
-The course collection endpoint supports these optional query parameters:
-
-| Parameter | Default    | Description                                                 |
-| --------- | ---------- | ----------------------------------------------------------- |
-| `query`   | None       | Case-insensitive partial match against course code or title |
-| `page`    | `0`        | Zero-based page number                                      |
-| `size`    | `10`       | Maximum courses returned in one page                        |
-| `sort`    | `code,asc` | Property and direction used to sort results                 |
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `query` | None | Partial case-insensitive match against code or title |
+| `page` | `0` | Zero-based page number |
+| `size` | `10` | Maximum results in one page |
+| `sort` | `code,asc` | Property and direction used to sort results |
 
 Example:
 
@@ -64,27 +111,7 @@ Example:
 curl "http://localhost:8080/api/courses?query=java&page=0&size=10&sort=title,asc"
 ```
 
-A paginated response contains course data under `content` and pagination metadata under `page`:
-
-```json
-{
-  "content": [
-    {
-      "id": 101,
-      "code": "JAVA101",
-      "title": "Java Programming"
-    }
-  ],
-  "page": {
-    "size": 10,
-    "number": 0,
-    "totalElements": 1,
-    "totalPages": 1
-  }
-}
-```
-
-## Example Course Request
+Example course request:
 
 ```json
 {
@@ -97,525 +124,42 @@ A paginated response contains course data under `content` and pagination metadat
 }
 ```
 
-## Technologies
+The API uses standard response statuses including `200`, `201`, `204`, `400`, `404` and `409`.
 
-- Java 21
-- Spring Boot 4.1.2
-- Spring Web MVC
-- Spring Data JPA
-- Hibernate
-- H2 Database
-- PostgreSQL
-- Flyway
-- Jakarta Bean Validation
-- Maven
-- JUnit
-- Mockito
-- IntelliJ IDEA
-- JavaScript
-- React
-- Vite
-- HTML and CSS
-- Node.js and npm
-- Oxlint
-- Prettier
-- Visual Studio Code
-- Git and GitHub
-- Docker and Docker Compose
+## Quick Start with Docker
 
-## Architecture
+### Requirements
 
-The project follows a frontend and layered backend design:
+- Docker Desktop
+- Docker Compose
 
-```text
-React frontend
-    ↓ HTTP / JSON
-Controller
-    ↓
-Service
-    ↓
-Repository abstraction
-    ↓
-JPA repository adapter
-    ↓
-Spring Data JPA
-    ↓
-H2 / PostgreSQL
-```
-
-The service layer depends on the `CourseRepository` abstraction rather than directly depending on Spring Data JPA. The JPA adapter implements this abstraction and handles database operations.
-
-## Project Structure
-
-```text
-college-course-management/
-├── .github/
-│   └── workflows/
-│       └── maven-ci.yml
-├── .vscode/
-│   └── settings.json
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── CourseForm.jsx
-│   │   │   └── EditCourseForm.jsx
-│   │   ├── App.css
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   └── main.jsx
-│   ├── index.html
-│   ├── package-lock.json
-│   ├── package.json
-│   └── vite.config.js
-├── src/
-│   ├── main/
-│   │   ├── java/com/prabakar/collegecourse/
-│   │   │   ├── config/
-│   │   │   ├── controller/
-│   │   │   ├── domain/
-│   │   │   ├── dto/
-│   │   │   ├── exception/
-│   │   │   ├── repository/
-│   │   │   │   └── jpa/
-│   │   │   ├── service/
-│   │   │   └── CollegeApplication.java
-│   │   └── resources/
-│   │       ├── db/migration/
-│   │       │   └── V1__create_course_schema.sql
-│   │       ├── application.properties
-│   │       ├── application-dev.properties
-│   │       └── application-prod.properties
-│   └── test/
-│       ├── java/com/prabakar/collegecourse/
-│       └── resources/
-│           └── application-test.properties
-├── .dockerignore
-├── .env.example
-├── .gitignore
-├── compose.yml
-├── Dockerfile
-├── pom.xml
-└── README.md
-```
-
-## Environment Profiles
-
-Spring Boot profiles separate configuration for different environments.
-
-| Profile | Configuration file            | Purpose                                                                |
-| ------- | ----------------------------- | ---------------------------------------------------------------------- |
-| Common  | `application.properties`      | Application name and shared JPA settings                               |
-| `dev`   | `application-dev.properties`  | File-based H2 database, H2 console, debug logging and local log files  |
-| `test`  | `application-test.properties` | Isolated in-memory H2 database for automated tests                     |
-| `prod`  | `application-prod.properties` | PostgreSQL database, production logging and disabled development tools |
-
-### Development Profile
-
-When running the application locally with H2, activate the `dev` profile.
-
-In IntelliJ IDEA:
-
-1. Open **Run → Edit Configurations**
-2. Select `CollegeApplication`
-3. Enter the following under **Program arguments**:
-
-```text
---spring.profiles.active=dev
-```
-
-The startup log should confirm:
-
-```text
-The following 1 profile is active: "dev"
-```
-
-The development profile:
-
-- Preserves local H2 data between restarts
-- Enables the H2 browser console
-- Enables application debug logging
-- Writes logs to the local `logs/` directory
-- Enables Swagger UI and OpenAPI documentation
-
-### Test Profile
-
-The integration test activates the `test` profile automatically.
-
-The test profile:
-
-- Uses an isolated in-memory H2 database
-- Creates and drops its schema during testing
-- Does not modify the local development database
-- Disables the H2 browser console
-- Reduces application logging during tests
-
-### Production Profile
-
-The `prod` profile uses PostgreSQL.
-
-PostgreSQL runs locally through Docker Compose. Copy the environment-variable template before starting it:
+Copy the environment template:
 
 ```bash
 cp .env.example .env
 ```
 
-Update the password in `.env`, then start PostgreSQL:
-
-```bash
-docker compose up -d
-```
-
-Check that the container is healthy:
-
-```bash
-docker compose ps
-```
-
-In IntelliJ IDEA, activate the production profile with:
-
-```text
---spring.profiles.active=prod
-```
-
-The production profile:
-
-- Connects to PostgreSQL
-- Reads database configuration from environment variables
-- Uses `INFO` application logging
-- Disables the H2 browser console
-- Disables Swagger UI and OpenAPI endpoints
-- Runs versioned Flyway database migrations
-- Uses Hibernate to validate the migrated schema
-
-To stop PostgreSQL while preserving its database volume:
-
-```bash
-docker compose down
-```
-
-To stop PostgreSQL and permanently remove its local database volume:
-
-```bash
-docker compose down -v
-```
-
-> `docker compose down -v` deletes the locally stored PostgreSQL data.
-
-## Running the Application
-
-### Backend
-
-Open the project in IntelliJ IDEA and run `CollegeApplication` with either the `dev` or `prod` profile enabled. Alternatively, start the containerized Spring Boot application and PostgreSQL database:
-
-```bash
-docker compose up -d
-```
-
-The backend starts at:
-
-```text
-http://localhost:8080
-```
-
-To verify the API:
-
-```bash
-curl http://localhost:8080/api/courses
-```
-
-When the `dev` profile is active, development tools are available at:
-
-- Swagger UI: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-- H2 Console: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
-
-These development tools are disabled when the `prod` profile is active.
-
-### Frontend
-
-The frontend requires Node.js and npm. Install its dependencies once:
-
-```bash
-cd frontend
-npm install
-```
-
-Start the Vite development server:
-
-```bash
-npm run dev
-```
-
-Open the frontend at:
-
-```text
-http://localhost:5173
-```
-
-During development, Vite proxies requests beginning with `/api` to the Spring Boot backend at `http://localhost:8080`.
-
-The React interface supports:
-
-- Course listing
-- Case-insensitive search by course code or title
-- Sorting and pagination
-- Course creation with field-level validation
-- Course editing with protected ID and code fields
-- Course deletion with confirmation
-- Automatic list refresh after create, update, and delete operations
-
-To stop the Vite development server, press `Control + C` in its terminal.
-
-## Database
-
-The application supports different databases for different environments.
-
-| Environment | Database   | Storage                          |
-| ----------- | ---------- | -------------------------------- |
-| Development | H2         | File-based and persistent        |
-| Test        | H2         | In-memory and temporary          |
-| Production  | PostgreSQL | Docker-managed persistent volume |
-
-### Development H2 Database
-
-Development records are stored under the local `data/` directory and remain available after application restarts. The directory is excluded from Git because it contains runtime data.
-
-The H2 console is available at:
-
-```text
-http://localhost:8080/h2-console
-```
-
-Use:
-
-```text
-JDBC URL: jdbc:h2:file:./data/college-course-db
-User Name: sa
-Password: leave blank
-```
-
-### PostgreSQL Database
-
-The production profile connects to the PostgreSQL container defined in `compose.yml`.
-
-Local connection details are read from `.env`. The `.env` file is excluded from Git, while `.env.example` documents the required variables:
-
-```text
-POSTGRES_HOST
-POSTGRES_PORT
-POSTGRES_DB
-POSTGRES_USER
-POSTGRES_PASSWORD
-```
-
-PostgreSQL data is stored in the Docker named volume:
-
-```text
-college-course-management_postgres-data
-```
-
-Both databases contain:
-
-- `courses`
-- `departments`
-
-The `courses.department_id` column associates each course with its department.
-
-> H2 is intended for local development and testing. PostgreSQL represents the production database configuration.
-
-## Database Migrations
-
-The production PostgreSQL schema is managed with Flyway.
-
-Migration scripts are stored under:
-
-```text
-src/main/resources/db/migration
-```
-
-The initial migration is:
-
-```text
-V1__create_course_schema.sql
-```
-
-It creates the `departments` and `courses` tables, their unique constraints, and the foreign-key relationship between courses and departments.
-
-Flyway records applied migrations in the `flyway_schema_history` table. Previously applied migration files must not be modified. Future schema changes should be introduced through new versioned scripts, for example:
-
-```text
-V2__add_course_duration.sql
-```
-
-In the production profile, Hibernate uses `ddl-auto=validate`. Flyway manages schema changes, while Hibernate verifies that the database schema matches the JPA entity mappings.
-
-## Application Logging
-
-The application uses SLF4J with Logback, provided by Spring Boot.
-
-Logging is implemented in the service layer for meaningful business operations:
-
-- `INFO` for successful course creation, update, and deletion
-- `WARN` for duplicate courses and missing courses
-- `DEBUG` for course retrieval details
-- `ERROR` is reserved for unexpected system failures
-
-Logs are written to both the console and `logs/college-course-management.log`.
-
-Log files rotate when they reach 10 MB, and seven historical files are retained. The local `logs/` directory is excluded from Git.
-
-The development profile uses `DEBUG` application logging, while the production profile uses `INFO`.
-
-## Running the Tests
-
-From IntelliJ IDEA, open the Maven tool window and run:
-
-```text
-Lifecycle → test
-```
-
-If Maven is installed and available from the terminal, run:
-
-```bash
-mvn test
-```
-
-Current backend test status: **44 tests passing**.
-
-The test suite covers:
-
-- Domain behaviour
-- In-memory repository behaviour
-- Service-layer operations
-- REST controller endpoints
-- Request validation
-- Exception handling
-- JPA repository adapter and H2 persistence
-- Full course lifecycle integration through Controller, Service, JPA, and H2
-- Course searching by code and title
-- Pagination and sorting
-
-### Frontend Checks
-
-From the `frontend` directory, run the focused component tests:
-
-```bash
-npm test
-```
-
-Current frontend test status: **5 tests passing across 2 test files**.
-
-Run the JavaScript linter:
-
-```bash
-npm run lint
-```
-
-Create an optimized production build:
-
-```bash
-npm run build
-```
-
-Verify Prettier formatting:
-
-```bash
-npm run format:check
-```
-
-The generated `frontend/dist/` directory is excluded from Git.
-
-## API Documentation
-
-Interactive OpenAPI documentation is available through Swagger UI while the application is running:
-
-```text
-http://localhost:8080/swagger-ui/index.html
-```
-
-The machine-readable OpenAPI specification is available at:
-
-```text
-http://localhost:8080/v3/api-docs
-```
-
-Swagger UI can be used to:
-
-- View all available course endpoints
-- Inspect request and response formats
-- Review validation requirements
-- Review possible HTTP response codes
-- Execute API requests directly from the browser
-
-## Continuous Integration
-
-GitHub Actions verifies both the backend and frontend on every push and pull request.
-
-The backend CI job:
-
-- Uses an Ubuntu runner
-- Installs Java 21
-- Caches Maven dependencies
-- Runs the Maven `verify` lifecycle
-- Executes all 44 backend tests
-- Fails if compilation or any backend test fails
-
-The frontend CI job:
-
-- Installs Node.js
-- Caches npm dependencies
-- Installs dependencies using `npm ci`
-- Executes all 5 frontend tests
-- Runs Oxlint
-- Creates the Vite production build
-- Verifies Prettier formatting
-
-
-## Running with Docker
-
-The backend stack can be run using Docker Compose. It includes:
-
-- Spring Boot application running with the `prod` profile
-- PostgreSQL 17 database
-- Flyway database migrations
-- Persistent PostgreSQL storage
-
-The React frontend currently runs separately through the Vite development server and is not yet included in Docker Compose.
-
-Copy the environment-variable template and provide a database password:
-
-```bash
-cp .env.example .env
-```
-
-Build and start the complete stack:
+Set a local PostgreSQL password in `.env`, then build and start the complete stack:
 
 ```bash
 docker compose up --build -d
 ```
 
-Check the container status:
+Check the containers:
 
 ```bash
 docker compose ps
 ```
 
-The REST API is available at:
+Open the application:
 
-```text
-http://localhost:8080/api/courses
-```
+- React UI: [http://localhost:3000](http://localhost:3000)
+- REST API: [http://localhost:8080/api/courses](http://localhost:8080/api/courses)
 
-Example request:
-
-```bash
-curl "http://localhost:8080/api/courses?page=0&size=10&sort=code,asc"
-```
-
-View application logs:
+View logs:
 
 ```bash
-docker compose logs -f application
+docker compose logs -f application frontend
 ```
 
 Stop the containers while preserving PostgreSQL data:
@@ -624,17 +168,128 @@ Stop the containers while preserving PostgreSQL data:
 docker compose down
 ```
 
-To remove the containers and permanently delete the PostgreSQL volume:
+To also delete the local PostgreSQL volume:
 
 ```bash
 docker compose down -v
 ```
 
-> `docker compose down -v` permanently deletes the locally stored PostgreSQL data.
+> `docker compose down -v` permanently removes the locally stored PostgreSQL data.
+
+## Local Development
+
+### Backend
+
+Run `CollegeApplication` from IntelliJ IDEA with the `dev` profile:
+
+```text
+--spring.profiles.active=dev
+```
+
+The backend starts at `http://localhost:8080`.
+
+Development tools:
+
+- Swagger UI: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- H2 Console: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+
+### Frontend
+
+With the backend running, start the Vite development server:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173). Vite proxies `/api` requests to the backend at port `8080`.
+
+## Environment Profiles
+
+| Profile | Database | Purpose |
+| --- | --- | --- |
+| `dev` | Persistent file-based H2 | Local development, Swagger and H2 console |
+| `test` | In-memory H2 | Isolated automated tests |
+| `prod` | PostgreSQL | Docker and production-style configuration |
+
+The production profile reads database settings from environment variables. `.env.example` documents the required values, while the local `.env` file is excluded from Git.
+
+Flyway migration scripts are stored in `src/main/resources/db/migration`. Flyway changes the production schema, and Hibernate validates that the schema matches the JPA mappings.
+
+## Testing and Code Quality
+
+### Backend
+
+Run:
+
+```bash
+mvn test
+```
+
+The backend suite contains **44 tests** covering domain logic, repositories, services, REST controllers, validation, exception handling, JPA persistence, integration, search, pagination and sorting.
+
+### Frontend
+
+From the `frontend` directory, run:
+
+```bash
+npm test
+npm run lint
+npm run build
+npm run format:check
+```
+
+The focused frontend suite contains **5 tests across 2 test files**, covering course creation, validation responses, paginated course display and API failures.
+
+## Continuous Integration
+
+GitHub Actions runs on pushes and pull requests. Independent jobs verify both parts of the application:
+
+- The backend job installs Java 21 and runs `mvn --batch-mode verify`.
+- The frontend job installs Node.js dependencies, runs tests and linting, creates a production build and verifies formatting.
+
+## Project Structure
+
+```text
+college-course-management/
+├── .github/workflows/       # GitHub Actions workflow
+├── docs/images/             # Portfolio screenshots
+├── frontend/                # React application and Nginx configuration
+│   ├── src/components/      # Course creation and editing components
+│   ├── src/test/            # Frontend test setup
+│   ├── Dockerfile
+│   └── nginx.conf
+├── src/main/java/           # Spring Boot application
+│   └── com/prabakar/collegecourse/
+│       ├── controller/
+│       ├── domain/
+│       ├── dto/
+│       ├── exception/
+│       ├── repository/
+│       └── service/
+├── src/main/resources/      # Profiles and Flyway migrations
+├── src/test/                # Backend automated tests
+├── compose.yml              # Full-stack container orchestration
+├── Dockerfile               # Spring Boot image
+├── pom.xml
+└── README.md
+```
+
+## Key Design Decisions
+
+- Layered backend architecture keeps HTTP, business and persistence concerns separate.
+- Repository abstraction prevents the service layer from depending directly on Spring Data.
+- DTOs separate API requests and responses from persistence entities.
+- Centralized exception handling produces consistent HTTP error responses.
+- Environment-specific profiles isolate development, test and production configuration.
+- Flyway owns production schema evolution; Hibernate validates the result.
+- Nginx serves optimized frontend assets and proxies API requests inside Docker Compose.
+- PostgreSQL data is retained in a Docker named volume across container restarts.
 
 ## Purpose
 
-This project is being developed incrementally to refresh modern Java, Spring Boot, and React skills while demonstrating clean code, automated testing, version control, REST API design, frontend integration, and database persistence.
+This portfolio project was developed incrementally to refresh and demonstrate modern Java, Spring Boot and React development. It brings together clean architecture, REST API design, frontend integration, persistence, migrations, testing, continuous integration and Docker-based delivery in one complete application.
 
 ## Author
 
